@@ -12,11 +12,9 @@ namespace testDPC
             ES_process eS_Process = new ES_process();
             ElasticClient client = eS_Process.ES_single_point_connection();
 
-            Student st = new Student
-            {
-                Id = "001", Name = "zhao", Description = "ceshi", DateTime = DateTime.Now
-            };
-            client.Index<Student>(st);
+            //创建索引
+            var descriptor = new CreateIndexDescriptor("db_student").Settings(s => s.NumberOfShards(5).NumberOfReplicas(1));
+            client.Index(descriptor);
         }
     }
 }
