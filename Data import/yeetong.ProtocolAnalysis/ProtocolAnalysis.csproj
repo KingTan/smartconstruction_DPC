@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C32E6799-BF9F-49F7-820A-E1B1FD186D3D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ProtocolAnalysis</RootNamespace>
+    <AssemblyName>ProtocolAnalysis</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\GOYO_Refactoring\GOYO_RefactoringPJ\bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SIXH.DBUtility">
+      <HintPath>..\GOYO.DLL\SIXH.DBUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TCPAPI, Version=1.17.7.26, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\yeetong.DLL\TCPAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="ToolAPI">
+      <HintPath>..\yeetong.DLL\ToolAPI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnalysisMain\ProtocolAnalysisSE_MainUdp.cs" />
+    <Compile Include="BorderProtection\DBMysqlBorderProtection.cs" />
+    <Compile Include="BorderProtection\GprsResolveDataV010000.cs" />
+    <Compile Include="BorderProtection\Model\BorderProtection_Alarm.cs" />
+    <Compile Include="BorderProtection\Model\BorderProtection_Current.cs" />
+    <Compile Include="BorderProtection\Model\BorderProtection_Heartbeat.cs" />
+    <Compile Include="CommandIssuedMain\CommandIssued_Main.cs" />
+    <Compile Include="DisCharge\CommandIssued_DisCharge.cs" />
+    <Compile Include="DisCharge\DB_MysqlDisCharge.cs" />
+    <Compile Include="DisCharge\GprsResolveDataV102.cs" />
+    <Compile Include="DisCharge\Model\Frame_Current.cs" />
+    <Compile Include="DisCharge\Model\Frame_Heartbeat.cs" />
+    <Compile Include="DisCharge\Model\Frame_IPConfiguration.cs" />
+    <Compile Include="DisCharge\Model\Frame_ParameterConfig.cs" />
+    <Compile Include="DisCharge\Model\Frame_RunTime.cs" />
+    <Compile Include="DisCharge\Model\Frame_TimeCalibration.cs" />
+    <Compile Include="electric\CommandIssued_elec.cs" />
+    <Compile Include="electric\DB_MysqlElectric.cs" />
+    <Compile Include="electric\GprsResolveDataV101.cs" />
+    <Compile Include="electric\Model\Frame_eCurrent.cs" />
+    <Compile Include="EntityReader.cs" />
+    <Compile Include="FogGun\CommandIssued_FogGun.cs" />
+    <Compile Include="FogGun\DB_MysqlFogGun.cs" />
+    <Compile Include="FogGun\GprsResolveDataV010002.cs" />
+    <Compile Include="FogGun\GprsResolveDataV010003.cs" />
+    <Compile Include="FogGun\GprsResolveDataV020000.cs" />
+    <Compile Include="FogGun\Model\FoggunSettingTimeWorkModel.cs" />
+    <Compile Include="FogGun\Model\Frame_Current.cs" />
+    <Compile Include="FogGun\Model\Frame_Heartbeat.cs" />
+    <Compile Include="FogGun\Model\Frame_ManualControl.cs" />
+    <Compile Include="FogGun\Model\Frame_TimedControl.cs" />
+    <Compile Include="FogGun\Model\Frame_TimingConfig.cs" />
+    <Compile Include="FogGun\Model\Frame_UpdateIpPort.cs" />
+    <Compile Include="GasDetection\CommandIssued_GasDetection.cs" />
+    <Compile Include="GasDetection\GprsResolveGasDetection.cs" />
+    <Compile Include="GasDetection\Model\Frame_Current.cs" />
+    <Compile Include="GasDetection\Mysql\DB_MysqlGasDetection.cs" />
+    <Compile Include="IdentityVerification\CommandIssued_IdentityVerification.cs" />
+    <Compile Include="IdentityVerification\DB_MysqlIdentityVerification.cs" />
+    <Compile Include="IdentityVerification\GprsResolve_IdentityVerification.cs" />
+    <Compile Include="IdentityVerification\model\Current_IdentityVerification.cs" />
+    <Compile Include="IdentityVerification\model\Heartbeat_IdentityVerification.cs" />
+    <Compile Include="IdentityVerification\model\IdentityVerificationC.cs" />
+    <Compile Include="IdentityVerification\model\information_IdentityVerification.cs" />
+    <Compile Include="IdentityVerification\model\Orderissued_IdentityVerification.cs" />
+    <Compile Include="InfraredContrast\GprsResolveInfraredContrast.cs" />
+    <Compile Include="InfraredContrast\Model\Frame_Current.cs" />
+    <Compile Include="InfraredContrast\Mysql\DB_MysqlInfraredContrast.cs" />
+    <Compile Include="Lift\010206\GprsResolveDataV010206.cs" />
+    <Compile Include="Lift\010209\GprsResolveDataV010209.cs" />
+    <Compile Include="DBFrame.cs" />
+    <Compile Include="Lift\010210\GprsResolveDataV010210.cs" />
+    <Compile Include="Lift\010300\GprsResolveDataV010300.cs" />
+    <Compile Include="Lift\010400\GprsResolveDataV010400.cs" />
+    <Compile Include="Lift\CommandIssued_Lift.cs" />
+    <Compile Include="Lift\GprsLiftBaseInfo.cs" />
+    <Compile Include="Lift\Mysql\DB_MysqlLift.cs" />
+    <Compile Include="MassConcrete\CommandIssued_MCLRK.cs" />
+    <Compile Include="MassConcrete\DB_Mysql.cs" />
+    <Compile Include="MassConcrete\GprsResolveData_LRK.cs.cs" />
+    <Compile Include="MassConcrete\GprsResolveData_Mc.cs" />
+    <Compile Include="MassConcrete\model\Heartbeat.cs" />
+    <Compile Include="MassConcrete\model\RealTimeData.cs" />
+    <Compile Include="RaiseDustNoise\GOYO\CommandIssued_dust.cs" />
+    <Compile Include="RaiseDustNoise\GOYO\model\gdust_Current.cs" />
+    <Compile Include="RaiseDustNoise\GOYO\model\gdust_Heartbeat.cs" />
+    <Compile Include="RaiseDustNoise\GOYO\model\gdust_para.cs" />
+    <Compile Include="RaiseDustNoise\GOYO\ProtocolAnalysis_GOYO.cs" />
+    <Compile Include="RaiseDustNoise\GOYO\ProtocolAnalysis_GOYO_New.cs" />
+    <Compile Include="RaiseDustNoise\GOYO\ProtocolAnalysis_GOYO_V1.0.4.cs" />
+    <Compile Include="RaiseDustNoise\Linkage.cs" />
+    <Compile Include="RaiseDustNoise\Mysql\DB_MysqlRaiseDustNoise.cs" />
+    <Compile Include="RaiseDustNoise\万维盈创\Current_WWYC.cs" />
+    <Compile Include="RaiseDustNoise\万维盈创\ProtocolAnalysis_WWYC.cs" />
+    <Compile Include="RaiseDustNoise\威海精讯\Current_WHJX.cs" />
+    <Compile Include="RaiseDustNoise\威海精讯\ProtocolAnalysis_WHJX.cs" />
+    <Compile Include="RaiseDustNoise\中科正奇\Current_ZKZQ.cs" />
+    <Compile Include="RaiseDustNoise\中科正奇\ProtocolAnalysis_ZKZQ.cs" />
+    <Compile Include="RaiseDustNoise\创塔\Current_CT.cs" />
+    <Compile Include="RaiseDustNoise\创塔\ProtocolAnalysis_CT.cs" />
+    <Compile Include="RaiseDustNoise\惜蓝\CommandIssued_XL.cs" />
+    <Compile Include="RaiseDustNoise\惜蓝\Current_XL.cs" />
+    <Compile Include="RaiseDustNoise\惜蓝\DB_XL.cs" />
+    <Compile Include="RaiseDustNoise\惜蓝\ProtocolAnalysis_XL.cs" />
+    <Compile Include="RaiseDustNoise\瞭望\CommandIssued_LW.cs" />
+    <Compile Include="RaiseDustNoise\瞭望\Current_LW.cs" />
+    <Compile Include="RaiseDustNoise\瞭望\ProtocolAnalysis_LW.cs" />
+    <Compile Include="RaiseDustNoise\蓝丰\Current_LF.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AnalysisMain\ProtocolAnalysisSE_Main.cs" />
+    <Compile Include="RaiseDustNoise\蓝丰\ProtocolAnalysis_LF.cs" />
+    <Compile Include="RaiseDustNoise\雄安\model\xadust_Current.cs" />
+    <Compile Include="RaiseDustNoise\雄安\Protocolanalysis_XA.cs" />
+    <Compile Include="Smoke\GprsResolveSmoke.cs" />
+    <Compile Include="Smoke\Mysql\DB_MysqlSmoke.cs" />
+    <Compile Include="Smoke\ResolveSmoke.cs" />
+    <Compile Include="SoftHat\CommandIssued_SoftHat.cs" />
+    <Compile Include="SoftHat\塞欧\GprsResolveSoftHat_SO.cs" />
+    <Compile Include="SoftHat\塞欧\GprsResolveSoftHat_SO_V1.cs" />
+    <Compile Include="SoftHat\塞欧\Model\Frame_Current.cs" />
+    <Compile Include="SoftHat\塞欧\Model\Frame_CurrentV1.cs" />
+    <Compile Include="SoftHat\木兰\GprsResolveSoftHat.cs" />
+    <Compile Include="SoftHat\木兰\SoftHatModel.cs" />
+    <Compile Include="SoftHat\Mysql\DB_MysqlHat.cs" />
+    <Compile Include="StrongEMonitor\GprsResolveStrongE.cs" />
+    <Compile Include="StrongEMonitor\model\StrongE.cs" />
+    <Compile Include="StrongEMonitor\Mysql\DB_MysqlStrong.cs" />
+    <Compile Include="Tool\ConvertWind.cs" />
+    <Compile Include="Tool\HexStringToDouble.cs" />
+    <Compile Include="Tool\SQLJoint.cs" />
+    <Compile Include="Tool\StringByDouble.cs" />
+    <Compile Include="TowerCrane\01\GprsResolveDataV01.cs" />
+    <Compile Include="TowerCrane\021303\CommandIssued_021303.cs" />
+    <Compile Include="TowerCrane\10\GprsResolveDataV10.cs" />
+    <Compile Include="TowerCrane\11\GprsResolveDataV11.cs" />
+    <Compile Include="TowerCrane\Mysql\DB_MysqlTowerCrane.cs" />
+    <Compile Include="TowerCrane\021303\FrameV021303.cs" />
+    <Compile Include="TowerCrane\021303\GprsResolveDataV021303.cs" />
+    <Compile Include="TowerCrane\021303\ISEFrame.cs" />
+    <Compile Include="TowerCrane\OE\CommandIssued_TC0E.cs" />
+    <Compile Include="TowerCrane\OE\GprsCraneBaseInfo.cs" />
+    <Compile Include="TowerCrane\OE\GprsCraneDataObject.cs" />
+    <Compile Include="TowerCrane\OE\GprsResolveDataV0E.cs" />
+    <Compile Include="TowerCrane\成都\GprsResolveStrongCD.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="dll\data_relay.sql" />
+    <Content Include="dll\GOYO.DBUtility.dll" />
+    <Content Include="dll\GOYO.Utils.dll" />
+    <Content Include="dll\GOYO_Architecture.dll" />
+    <Content Include="dll\GOYO_ProtocolAnalysis.dll" />
+    <Content Include="dll\Newtonsoft.Json.dll" />
+    <Content Include="dll\SIXH.DBUtility.dll" />
+    <Content Include="dll\TCPAPI.dll" />
+    <Content Include="dll\ToolAPI.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="dll\Config.ini" />
+    <None Include="dll\卸载.bat" />
+    <None Include="dll\安装.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\yeetong.Refactoring\Architecture.csproj">
+      <Project>{f3acfb36-9b5b-48cf-ba2d-57aebdad15d2}</Project>
+      <Name>Architecture</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\yeetong.UdpServer\UdpServer.csproj">
+      <Project>{0809f00e-a058-4db0-8d61-5830f9e4d83a}</Project>
+      <Name>UdpServer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
