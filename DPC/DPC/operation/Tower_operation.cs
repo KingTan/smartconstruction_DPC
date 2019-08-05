@@ -147,5 +147,13 @@ namespace DPC
             }
         }
         #endregion
+
+        #region 更新设备在线时间
+        public static void Update_equminet_last_online_time(string sn,long time)
+        {
+            string key = "equipment:online_time:01_01:"+sn;
+            RedisCacheHelper.Add(key, time);
+        }
+        #endregion
     }
 }

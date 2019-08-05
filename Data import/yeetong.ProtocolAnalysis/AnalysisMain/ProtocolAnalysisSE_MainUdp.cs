@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Architecture;
-using ProtocolAnalysis.TowerCrane;
 using TCPAPI;
 using ToolAPI;
 
@@ -21,35 +20,11 @@ namespace ProtocolAnalysis
             //烟感及强电
             switch (MainStatic.DeviceType)
             {
-                case 0:  ProtocolPackageResolver_Crane(b, udp); break;
+              
                 default: break;
             }
         }
-        /// <summary>
-        /// 塔机
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="client"></param>
-        public static void ProtocolPackageResolver_Crane(byte[] b, UdpState client)
-        {
-            if (b.Length == 54 || b.Length == 29)
-            {
-                //判断帧类型  Convert.ToString(d, 2)
-                string Frame = Convert.ToString(Convert.ToInt16(b[3]), 2).PadLeft(8, '0') + Convert.ToString(Convert.ToInt16(b[4]), 2).PadLeft(8, '0');
-                //帧类型（截取）string.Format("{0:x}",Convert.ToInt32(Frame.Substring(0, 5),2)
-                string FrameType = string.Format("{0:x}", Convert.ToInt32(Frame.Substring(0, 5), 2));
-                if (FrameType.Equals("2"))//实时数据
-                {
-                    GprsResolveStrongCD.OnResolveRecvCurrentMessage(b, client);
-                    ToolAPI.XMLOperation.WriteLogXmlNoTail("OnResolveRecvMessage-->收到数据", "11111111111111111");
-                }
-                else if (FrameType.Equals("4"))//获取设备号
-                {
-                    GprsResolveStrongCD.OnResolveRecvEquipmentMessage(b, client);
-                    ToolAPI.XMLOperation.WriteLogXmlNoTail("OnResolveRecvMessage-->收到数据", "2222222222222222222");
-                }
-            }
-        }
+       
         /// <summary>
         /// 数组转string
         /// </summary>

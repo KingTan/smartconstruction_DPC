@@ -5,8 +5,6 @@ using System.Text;
 using Architecture;
 using ProtocolAnalysis.DisCharge;
 using ProtocolAnalysis.Lift;
-using ProtocolAnalysis.TowerCrane._021303;
-using ProtocolAnalysis.TowerCrane.OE;
 using TCPAPI;
 
 namespace ProtocolAnalysis
@@ -19,10 +17,7 @@ namespace ProtocolAnalysis
             {
                 //塔吊
                 case 0:
-                    CommandIssuedInitEvent += CommandIssued_TC0E.Crane_SetIPConfig;
-                    CommandIssuedInitEvent += CommandIssued_TC0E.Crane_SetControl;
-                    CommandIssuedInitEvent += CommandIssued_021303.SetIPConfig;
-                    CommandIssuedInitEvent += CommandIssued_021303.CommandIssued;
+           
                     break;
                 //升降机
                 case 1:

@@ -114,19 +114,7 @@
     <Compile Include="Tool\HexStringToDouble.cs" />
     <Compile Include="Tool\SQLJoint.cs" />
     <Compile Include="Tool\StringByDouble.cs" />
-    <Compile Include="TowerCrane\goyo\01\GprsResolveDataV01.cs" />
-    <Compile Include="TowerCrane\goyo\021303\CommandIssued_021303.cs" />
-    <Compile Include="TowerCrane\goyo\10\GprsResolveDataV10.cs" />
-    <Compile Include="TowerCrane\goyo\11\GprsResolveDataV11.cs" />
-    <Compile Include="TowerCrane\goyo\Mysql\DB_MysqlTowerCrane.cs" />
-    <Compile Include="TowerCrane\goyo\021303\FrameV021303.cs" />
-    <Compile Include="TowerCrane\goyo\021303\GprsResolveDataV021303.cs" />
-    <Compile Include="TowerCrane\goyo\021303\ISEFrame.cs" />
-    <Compile Include="TowerCrane\goyo\OE\CommandIssued_TC0E.cs" />
-    <Compile Include="TowerCrane\goyo\OE\GprsCraneBaseInfo.cs" />
-    <Compile Include="TowerCrane\goyo\OE\GprsCraneDataObject.cs" />
     <Compile Include="TowerCrane\goyo\OE\GprsResolveDataV0E.cs" />
-    <Compile Include="TowerCrane\成都\GprsResolveStrongCD.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

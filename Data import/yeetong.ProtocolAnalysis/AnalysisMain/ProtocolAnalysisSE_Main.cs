@@ -6,18 +6,6 @@ using System.Threading.Tasks;
 using Architecture;
 using TCPAPI;
 using ToolAPI;
-/*---------------------------------------------
-Copyright (c) 2017 共友科技
-版权所有：共友科技
-创建人名：赵通
-创建描述：协议解析主入口
-创建时间：2017.10.11
-文件功能描述：协议解析主入口，根据版本号进行分流
-修改人名：
-修改描述：
-修改标识：
-修改时间：
----------------------------------------------*/
 namespace ProtocolAnalysis
 {
     public class ProtocolAnalysisSE_Main
@@ -35,7 +23,6 @@ namespace ProtocolAnalysis
                 case 1: ProtocolPackageResolver_Lift(b, c, client); break;
                 //卸料
                 case 2: ProtocolPackageResolver_Unload(b, c, client); break;
-               
                 //扬尘
                 case 4: ProtocolPackageResolver_RaiseDustNoise(b, c, client); break;
 
@@ -44,15 +31,12 @@ namespace ProtocolAnalysis
             }
         }
 
-
         #region 塔吊
         public static void ProtocolPackageResolver_TowerCrane(byte[] b, int c, TcpSocketClient client)
         {
             switch (b[0])
             {
-                case 0xA5:
-                    GoYOTower0xA5(b, c, client);
-                    break;
+                //goyo
                 case 0x7E:
                     GoYOTower0x7E(b, c, client);
                     break;
@@ -60,8 +44,6 @@ namespace ProtocolAnalysis
         }
         #region 0x7E开头的处理
         static OnResolveRecvMessagedelegate OnResolveRecvMessagede_7E0E = GprsResolveDataV0E.OnResolveRecvMessage;
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_7E01 = GprsResolveDataV01.OnResolveRecvMessage;
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_7E11 = GprsResolveDataV11.OnResolveRecvMessage;
         private static void GoYOTower0x7E(byte[] b, int c, TcpSocketClient client)
         {
             TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
@@ -71,27 +53,7 @@ namespace ProtocolAnalysis
                     TcpExtendTemp.TVersion = "7E7E0E";
                     GoYOUnpack(b, c, client, "7E7E0E", "7D7D", OnResolveRecvMessagede_7E0E);
                     break;
-                case 0x01:
-                    TcpExtendTemp.TVersion = "7E7E0E";
-                    GoYOUnpack(b, c, client, "7E7E01", "7D7D", OnResolveRecvMessagede_7E01);
-                    break;
-                case 0x11:
-                    TcpExtendTemp.TVersion = "7E7E0E";
-                    GoYOUnpack(b, c, client, "7E7E11", "7D7D", OnResolveRecvMessagede_7E11);
-                    break;
                 default: break;
-            }
-        }
-        #endregion
-        #region 0xA5开头的处理
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagedeV021303 = GprsResolveDataV021303.OnResolveRecvMessage;
-        private static void GoYOTower0xA5(byte[] b, int c, TcpSocketClient client)
-        {
-            TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-            if (b[2] == 0x02 && b[3] == 0x13 && b[4] == 0x03)
-            {
-                TcpExtendTemp.TVersion = "A55A021303";
-                GoYOUnpack(b, c, client, "A55A021303", "EEFF", OnResolveRecvMessagedeV021303);
             }
         }
         #endregion
