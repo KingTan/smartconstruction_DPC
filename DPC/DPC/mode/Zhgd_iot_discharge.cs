@@ -38,4 +38,23 @@ namespace DPC
         /// </summary>
         public string work_cycles_warning { get; set; }
     }
+
+    /// <summary>
+    /// 运行数据记录
+    /// </summary>
+    public class Zhgd_iot_discharge_working_state
+    {
+        /// <summary>
+        /// 设备编码
+        /// </summary>
+        public string sn { get; set; }
+        /// <summary>
+        /// 工作循环序列码 0不在进行工作， 非0 正在进行工作
+        /// </summary>
+        public string is_work_cycles_warning { get; set; }
+        /// <summary>
+        /// 是否存在报警  默认false
+        /// </summary>
+        public bool work_cycles_warning { get; set; }
+    }
 }

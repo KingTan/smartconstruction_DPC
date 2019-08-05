@@ -22,8 +22,6 @@ namespace ProtocolAnalysis
             switch (MainStatic.DeviceType)
             {
                 case 0:  ProtocolPackageResolver_Crane(b, udp); break;
-                case 9: ProtocolPackageResolver_Smoke(b, udp); break;
-                case 11: ProtocolPackageResolver_StrongEMonitor(b, udp); break;
                 default: break;
             }
         }
@@ -71,33 +69,7 @@ namespace ProtocolAnalysis
             }
             return hexString;
         }
-        /// <summary>
-        /// 烟感
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="client"></param>
-        public static void ProtocolPackageResolver_Smoke(byte[] b, UdpState client)
-        {
-            if (ConvertData.ToHexString(b, 0, 1) == "40")
-            {
-                GoYOUnpack(b, b.Length, client, "4040", "2323");
-            }
-            else
-
-            {
-                GprsResolveSmoke.OnResolveRecvMessage(b, client);
-            }
-            
-        }
-        /// <summary>
-        /// 强电监测
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="client"></param>
-        public static void ProtocolPackageResolver_StrongEMonitor(byte[] b, UdpState client)
-        {
-            GprsResolveStrongE.OnResolveRecvMessage(b, client);
-        }
+      
 
         /// <summary>
         /// 拆包算法
@@ -126,8 +98,6 @@ namespace ProtocolAnalysis
                         string frames = startStr + DataHexAry[i];
                         byte[] framesByte = ConvertData.HexToByte(frames);
                         //FileHelp.FileAppend(string.Format("【{0}】设备连接传入数据：{1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), ConvertData.ToHexString(framesByte, 0, framesByte.Length)));
-                        //进入对应的解析类
-                        ProtocolAnalysis.Smoke.ResolveSmoke.OnResolveRecvMessage(framesByte, client);
                     }
                 }
             }

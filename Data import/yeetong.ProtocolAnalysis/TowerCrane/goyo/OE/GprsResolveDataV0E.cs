@@ -11,6 +11,8 @@ using ProtocolAnalysis.TowerCrane.OE;
 using ProtocolAnalysis.Tool;
 using ProtocolAnalysis.TowerCrane;
 using Newtonsoft.Json;//存放对象的
+using DPC;
+
 namespace ProtocolAnalysis
 {
     public static class GprsResolveDataV0E
@@ -83,7 +85,7 @@ namespace ProtocolAnalysis
                 }
                 return "";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return "";
             }
@@ -102,870 +104,174 @@ namespace ProtocolAnalysis
             string tStr = ConvertData.ToHexString(b, 0, 2);
             if (tStr != "7E7E")
                 return null;
-            GprsCraneDataObject data = new GprsCraneDataObject();
-            if (bCount == 66)
+            Zhgd_iot_tower_current data = new Zhgd_iot_tower_current();
+            #region 原协议
+            //设备号
+            data.sn = ConvertData.ToHexString(b, 5, 3);
+            //司机卡号
+            data.driver_id_code = ConvertData.ToHexString(b, 8, 4);
+            //日期
+            tStr = ConvertData.ToHexString(b, 12, 6);
+            try
             {
-                #region 原协议
-                //设备号
-                data.Current.Craneno = ConvertData.ToHexString(b, 5, 3);
-                //司机卡号
-                data.Current.Card = ConvertData.ToHexString(b, 8, 4);
-                //日期
-                tStr = ConvertData.ToHexString(b, 12, 6);
-                try
-                {
-                    data.Current.Rtime = DateTime.ParseExact(tStr, "yyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss");
-                }
-                catch
-                {
-                    data.Current.Rtime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                }
-                data.Current.Rtime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                IntValue iv = new IntValue();
-                //经度
-                iv.bValue1 = b[18];
-                iv.bValue2 = b[19];
-                iv.bValue3 = b[20];
-                iv.bValue4 = b[21];
-                data.Current.Longitude = (iv.iValue / 100000.0).ToString("0.00");
-                //纬度
-                iv.bValue1 = b[22];
-                iv.bValue2 = b[23];
-                iv.bValue3 = b[24];
-                iv.bValue4 = b[25];
-                data.Current.Latitude = (iv.iValue / 100000.0).ToString("0.00");
-                UShortValue s = new UShortValue();
-                //高度
-                s.bValue1 = b[26];
-                s.bValue2 = b[27];
-                data.Current.Height = (s.sValue / 100.00).ToString("0.00");
-                //幅度
-                s.bValue1 = b[28];
-                s.bValue2 = b[29];
-                data.Current.Radius = (s.sValue / 100.00).ToString("0.00");
-                ShortValue sv = new ShortValue();
-                //转角
-                sv.bValue1 = b[30];
-                sv.bValue2 = b[31];
-                data.Current.Angle = (sv.sValue / 10.00).ToString("0.00");
-                //重量
-                s.bValue1 = b[32];
-                s.bValue2 = b[33];
-                data.Current.Weight = (s.sValue / 100.00).ToString("0.00");
-                //风速
-                s.bValue1 = b[34];
-                s.bValue2 = b[35];
-                data.Current.Wind = (s.sValue / 100.00).ToString("0.00");
-                data.Current.WindLevel = ConvertWind.WindToLeve(s.sValue / 100.0f).ToString();
-                if (int.Parse(data.Current.WindLevel) > 13)
-                    data.Current.Wind = "12";
-                //倾角X
-                sv.bValue1 = b[36];
-                sv.bValue2 = b[37];
-                data.Current.AngleX = (sv.sValue / 100.00).ToString("0.00");
-                //倾角Y
-                sv.bValue1 = b[38];
-                sv.bValue2 = b[39];
-                data.Current.AngleY = (sv.sValue / 100.00).ToString("0.00");
-                //安全力矩
-                s.bValue1 = b[40];
-                s.bValue2 = b[41];
-                data.Current.Safetorque = (s.sValue / 10.00).ToString("0.00");
-                //安全起重量
-                s.bValue1 = b[42];
-                s.bValue2 = b[43];
-                data.Current.SafeWeight = (s.sValue / 100.00).ToString("0.00");
-                /*ZT20160923添加计算力矩*/
-                data.Current.Torque = (double.Parse(data.Current.Weight) * double.Parse(data.Current.Radius)).ToString("0.00");
-                //力矩百分比
-                if (data.Current.Safetorque != "0.00")
-                    data.Current.Torquepercent = ((double.Parse(data.Current.Weight) * double.Parse(data.Current.Radius)) / double.Parse(data.Current.Safetorque)).ToString("0.00");
-                else
-                    data.Current.Torquepercent = "0.00";
-                //倍率
-                data.Current.Times = Convert.ToInt32(b[44]).ToString();
-                if (int.Parse(data.Current.Times) > 4)
-                    data.Current.Times = "2";
-                //限位控制器状态
-                s.bValue1 = b[51];
-                s.bValue2 = b[52];
-                data.Current.LimitStatus = Convert.ToString(s.sValue, 2).PadLeft(16, '0');
-                LimitFlag(data, data.Current.LimitStatus);
-
-                //传感器状态
-                s.bValue1 = b[53];
-                s.bValue2 = b[54];
-                data.Current.SensorStatus = Convert.ToString(s.sValue, 2).PadLeft(16, '0');
-
-                //预警告码
-                IntValue i = new IntValue();
-                i.bValue1 = b[55];
-                i.bValue2 = b[56];
-                i.bValue3 = b[57];
-                i.bValue4 = b[58];
-                data.Current.WarnType = Convert.ToString(i.iValue, 2).PadLeft(32, '0');
-                WarnFlag(data, data.Current.WarnType);
-                //报警告码
-                i.bValue1 = b[59];
-                i.bValue2 = b[60];
-                i.bValue3 = b[61];
-                i.bValue4 = b[62];
-                data.Current.AlarmType = Convert.ToString(i.iValue, 2).PadLeft(32, '0');//总共是32位右对齐
-                AlarmFlag(data, data.Current.AlarmType); //报警码解析
-                data.Current.WorkCircle = "0"; //注销不需要计算了工作循环了
-                tStr = ConvertData.ToHexString(b, 64, 2);
-                if (tStr != "7D7D")
-                    return null;
-                #endregion
+                data.@timestamp = DPC_Tool.GetTimeStamp(DateTime.ParseExact(tStr, "yyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture));
             }
-            else if (bCount == 70)
+            catch
             {
-                #region 荆门
-                //设备号
-                data.Current.Craneno = ConvertData.ToHexString(b, 5, 3);
-                //司机卡号
-                byte[] emp = new byte[8];
-                for (int l = 8, j = 0; l < 16; l++, j++)
-                {
-                    emp[j] = b[l];
-                }
-                data.Current.Card = Encoding.ASCII.GetString(emp);
-                //日期
-                tStr = ConvertData.ToHexString(b, 16, 6);
-                try
-                {
-                    data.Current.Rtime = DateTime.ParseExact(tStr, "yyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss");
-                }
-                catch
-                {
-                    data.Current.Rtime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                }
-                data.Current.Rtime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-               
-                UShortValue s = new UShortValue();
-                //高度
-                s.bValue1 = b[30];
-                s.bValue2 = b[31];
-                data.Current.Height = (s.sValue / 100.00).ToString("0.00");
-                //幅度
-                s.bValue1 = b[32];
-                s.bValue2 = b[33];
-                data.Current.Radius = (s.sValue / 100.00).ToString("0.00");
-                ShortValue sv = new ShortValue();
-                //转角
-                sv.bValue1 = b[34];
-                sv.bValue2 = b[35];
-                data.Current.Angle = (sv.sValue / 10.00).ToString("0.00");
-                //重量
-                s.bValue1 = b[36];
-                s.bValue2 = b[37];
-                data.Current.Weight = (s.sValue / 100.00).ToString("0.00");
-                //风速
-                s.bValue1 = b[38];
-                s.bValue2 = b[39];
-                data.Current.Wind = (s.sValue / 100.00).ToString("0.00");
-                data.Current.WindLevel = ConvertWind.WindToLeve(s.sValue / 100.0f).ToString();
-                if (int.Parse(data.Current.WindLevel) > 13)
-                    data.Current.Wind = "12";
-                //倾角X
-                sv.bValue1 = b[40];
-                sv.bValue2 = b[41];
-                data.Current.AngleX = (sv.sValue / 100.00).ToString("0.00");
-                //倾角Y
-                sv.bValue1 = b[42];
-                sv.bValue2 = b[43];
-                data.Current.AngleY = (sv.sValue / 100.00).ToString("0.00");
-                //安全力矩
-                s.bValue1 = b[44];
-                s.bValue2 = b[45];
-                data.Current.Safetorque = (s.sValue / 10.00).ToString("0.00");
-                //安全起重量
-                s.bValue1 = b[46];
-                s.bValue2 = b[47];
-                //ToolAPI.XMLOperation.WriteLogXmlNoTail(string.Format("【{0}】设备号:{1} 安全起重量{2}{3}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), data.Current.Craneno, b[42].ToString(), b[43].ToString()));
-                data.Current.SafeWeight = (s.sValue / 100.00).ToString("0.00");
-                /*ZT20160923添加计算力矩*/
-                data.Current.Torque = (double.Parse(data.Current.Weight) * double.Parse(data.Current.Radius)).ToString("0.00");
-                //力矩百分比
-                if (data.Current.Safetorque != "0.00")
-
-                    data.Current.Torquepercent = ((double.Parse(data.Current.Weight) * double.Parse(data.Current.Radius)) / double.Parse(data.Current.Safetorque)).ToString("0.00");
-                else
-                    data.Current.Torquepercent = "0.00";
-                //倍率
-                data.Current.Times = Convert.ToInt32(b[48]).ToString();
-                if (int.Parse(data.Current.Times) > 4)
-                    data.Current.Times = "2";
-                //限位控制器状态
-                s.bValue1 = b[55];
-                s.bValue2 = b[56];
-                data.Current.LimitStatus = Convert.ToString(s.sValue, 2).PadLeft(16, '0');
-                LimitFlag(data, data.Current.LimitStatus);
-
-                //传感器状态
-                s.bValue1 = b[57];
-                s.bValue2 = b[58];
-                data.Current.SensorStatus = Convert.ToString(s.sValue, 2).PadLeft(16, '0');
-
-                //预警告码
-                IntValue i = new IntValue();
-                i.bValue1 = b[59];
-                i.bValue2 = b[60];
-                i.bValue3 = b[61];
-                i.bValue4 = b[62];
-                data.Current.WarnType = Convert.ToString(i.iValue, 2).PadLeft(32, '0');
-                WarnFlag(data, data.Current.WarnType);
-                //报警告码
-                i.bValue1 = b[63];
-                i.bValue2 = b[64];
-                i.bValue3 = b[65];
-                i.bValue4 = b[66];
-                data.Current.AlarmType = Convert.ToString(i.iValue, 2).PadLeft(32, '0');
-                AlarmFlag(data, data.Current.AlarmType);
-                tStr = ConvertData.ToHexString(b, 68, 2);
-                if (tStr != "7D7D")
-                    return null;
-
-                #endregion
+                data.@timestamp = DPC_Tool.GetTimeStamp();
             }
-            else
-            {
+            IntValue iv = new IntValue();
+            //经度
+            iv.bValue1 = b[18];
+            iv.bValue2 = b[19];
+            iv.bValue3 = b[20];
+            iv.bValue4 = b[21];
+            //data.Current.Longitude = (iv.iValue / 100000.0).ToString("0.00");
+            //纬度
+            iv.bValue1 = b[22];
+            iv.bValue2 = b[23];
+            iv.bValue3 = b[24];
+            iv.bValue4 = b[25];
+            //data.Current.Latitude = (iv.iValue / 100000.0).ToString("0.00");
+            UShortValue s = new UShortValue();
+            //高度
+            s.bValue1 = b[26];
+            s.bValue2 = b[27];
+            data.height = double.Parse((s.sValue / 100.00).ToString("0.00"));
+            //幅度
+            s.bValue1 = b[28];
+            s.bValue2 = b[29];
+            data.range = double.Parse((s.sValue / 100.00).ToString("0.00"));
+            ShortValue sv = new ShortValue();
+            //转角
+            sv.bValue1 = b[30];
+            sv.bValue2 = b[31];
+            data.rotation = double.Parse((sv.sValue / 10.00).ToString("0.00"));
+            //重量
+            s.bValue1 = b[32];
+            s.bValue2 = b[33];
+            data.weight = double.Parse((s.sValue / 100.00).ToString("0.00"));
+            //风速
+            s.bValue1 = b[34];
+            s.bValue2 = b[35];
+            data.wind_speed = double.Parse((s.sValue / 100.00).ToString("0.00"));
+            data.wind_grade = ConvertWind.WindToLeve(s.sValue / 100.0f);
+            if (data.wind_grade >= 13)
+                data.wind_grade = 12;
+            //倾角X
+            sv.bValue1 = b[36];
+            sv.bValue2 = b[37];
+            data.dip_x = double.Parse((sv.sValue / 100.00).ToString("0.00"));
+            //倾角Y
+            sv.bValue1 = b[38];
+            sv.bValue2 = b[39];
+            data.dip_y = double.Parse((sv.sValue / 100.00).ToString("0.00"));
+            //安全力矩
+            s.bValue1 = b[40];
+            s.bValue2 = b[41];
+            //data.Current.Safetorque = (s.sValue / 10.00).ToString("0.00");
+            //安全起重量
+            s.bValue1 = b[42];
+            s.bValue2 = b[43];
+            //data.Current.SafeWeight = (s.sValue / 100.00).ToString("0.00");
+            //倍率
+            //data.Current.Times = Convert.ToInt32(b[44]).ToString();
+
+            //限位控制器状态
+            //s.bValue1 = b[51];
+            //s.bValue2 = b[52];
+            //data.Current.LimitStatus = Convert.ToString(s.sValue, 2).PadLeft(16, '0');
+            //LimitFlag(data, data.Current.LimitStatus);
+
+            ////传感器状态
+            //s.bValue1 = b[53];
+            //s.bValue2 = b[54];
+            //data.Current.SensorStatus = Convert.ToString(s.sValue, 2).PadLeft(16, '0');
+
+            //预警告码
+            IntValue i = new IntValue();
+            //i.bValue1 = b[55];
+            //i.bValue2 = b[56];
+            //i.bValue3 = b[57];
+            //i.bValue4 = b[58];
+            //string WarnType = Convert.ToString(i.iValue, 2).PadLeft(32, '0');
+
+            //WarnFlag(data, WarnType);
+            //报警告码
+            i.bValue1 = b[59];
+            i.bValue2 = b[60];
+            i.bValue3 = b[61];
+            i.bValue4 = b[62];
+            string AlarmType = Convert.ToString(i.iValue, 2).PadLeft(32, '0');//总共是32位右对齐
+            AlarmFlag(data, AlarmType); //报警码解析
+            tStr = ConvertData.ToHexString(b, 64, 2);
+            if (tStr != "7D7D")
                 return null;
-            }
-            //存数据库
-            //看看是否发送短信
-            //存入数据库
-            df.deviceid = data.Current.Craneno;
-            df.datatype = "current";
-            df.contentjson = JsonConvert.SerializeObject(data.Current);
+            #endregion
 
-            string sourId = data.Current.Craneno;
-            //数据库的拷贝
-            if (!string.IsNullOrEmpty(MainStatic.DeviceCopy_TowerCrane))
-            {
-                if (MainStatic.DeviceCopy_TowerCrane.Contains(sourId + "#"))
-                {
-                    try
-                    {
-                        string[] strary = MainStatic.DeviceCopy_TowerCrane.Split(';');
-                        foreach (string dev in strary)
-                        {
-                            if(dev.Contains(sourId + "#"))
-                            {
-                                string[] devcopy = dev.Split('#');
-                                data.Current.Craneno = devcopy[1];
-                                DBFrame dfcopy = DBFrame.DeepCopy(df);
-                                dfcopy.deviceid = devcopy[1];
-                                dfcopy.datatype = "current";
-                                dfcopy.contentjson = JsonConvert.SerializeObject(data.Current);
-                                if (dfcopy.contentjson != null && dfcopy.contentjson != "")
-                                {
-                                    DB_MysqlTowerCrane.SaveTowerCrane(dfcopy);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-
-                }
-            }
+            //进行数据put 
+            Tower_operation.Send_tower_Current(data);
             return null;
         }
         /// <summary>
         /// 警告标识
         /// </summary>
-        public static void AlarmFlag(GprsCraneDataObject data, string AlarmStr)
+        public static void AlarmFlag(Zhgd_iot_tower_current data, string AlarmStr)
         {
             int l = AlarmStr.Length;
-            bool flag = false;
+            List<string> vs = new List<string>();
+            data.is_warning = "N";
             #region 风速报警 bit0
             if (AlarmStr.Substring(l - 1, 1) == "1")//风速报警
             {
-                data.Current.WindAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.WindAlarm_Warn == "1")
-                    data.Current.WindAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.WindAlarm = "0";
+                vs.Add(Warning_type.风速报警);
+                data.is_warning = "Y";
             }
             #endregion
             #region 超重报警 bit1
             if (AlarmStr.Substring(l - 2, 1) == "1")//超重报警
             {
-                data.Current.WeightAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.WeightAlarm_Warn == "1")
-                    data.Current.WeightAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.WeightAlarm = "0";
+                vs.Add(Warning_type.重量告警);
+                data.is_warning = "Y";
             }
             #endregion
             #region 碰撞报警 bit2
             if (AlarmStr.Substring(l - 3, 1) == "1")//交叉干涉报警
             {
-                data.Current.HitAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.HitAlarm_Warn == "1")
-                    data.Current.HitAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.HitAlarm = "0";
+                vs.Add(Warning_type.碰撞报警);
+                data.is_warning = "Y";
             }
             #endregion
             #region 力矩报警 bit3
             if (AlarmStr.Substring(l - 4, 1) == "1")//力矩报警
             {
-                data.Current.TorqueAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.TorqueAlarm_Warn == "1")
-                    data.Current.TorqueAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.TorqueAlarm = "0";
+                vs.Add(Warning_type.力矩报警);
+                data.is_warning = "Y";
             }
             #endregion
             #region 倾斜 bit4
             if (AlarmStr.Substring(l - 5, 1) == "1")//倾斜报警
             {
-                data.Current.AngleAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.AngleAlarm_Warn == "1")
-                    data.Current.AngleAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.AngleAlarm = "0";
-            }
-            #endregion
-            #region 前碰撞bit8  后碰撞bit9 左碰撞bit10 右碰撞bit11
-            if (AlarmStr.Substring(l - 9, 1) == "1")//前进多机防碰撞报警
-            {
-                data.Current.InAlarm_Hit = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.InAlarm_Hit_Warn == "1")
-                    data.Current.InAlarm_Hit_Warn = "0";
-            }
-            else
-            {
-                data.Current.InAlarm_Hit = "0";
-            }
-            if (AlarmStr.Substring(l - 10, 1) == "1")//后退多机防碰撞报警
-            {
-                data.Current.OutAlarm_Hit = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.OutAlarm_Hit_Warn == "1")
-                    data.Current.OutAlarm_Hit_Warn = "0";
-            }
-            else
-            {
-                data.Current.OutAlarm_Hit = "0";
-            }
-            if (AlarmStr.Substring(l - 11, 1) == "1")//左转多机防碰撞报警
-            {
-                data.Current.LeftAlarm_Hit = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.LeftAlarm_Hit_Warn == "1")
-                    data.Current.LeftAlarm_Hit_Warn = "0";
-            }
-            else
-            {
-                data.Current.LeftAlarm_Hit = "0";
-            }
-            if (AlarmStr.Substring(l - 12, 1) == "1")//右转多机防碰撞报警
-            {
-                data.Current.RightAlarm_Hit = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.RightAlarm_Hit_Warn == "1")
-                    data.Current.RightAlarm_Hit_Warn = "0";
-            }
-            else
-            {
-                data.Current.RightAlarm_Hit = "0";
+                vs.Add(Warning_type.倾斜报警);
+                data.is_warning = "Y";
             }
             #endregion
             #region 区域保护前bit12  区域保护后bit13 区域保护左bit14 区域保护右bit15
-            if (AlarmStr.Substring(l - 13, 1) == "1")//前进进入禁止区域报警
+            if (AlarmStr.Substring(l - 13, 1) == "1" || AlarmStr.Substring(l - 14, 1) == "1" || AlarmStr.Substring(l - 15, 1) == "1" || AlarmStr.Substring(l - 16, 1) == "1")//前进进入禁止区域报警
             {
-                data.Current.InAlarm_Area = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.InAlarm_Area_Warn == "1")
-                    data.Current.InAlarm_Area_Warn = "0";
-            }
-            else
-            {
-                data.Current.InAlarm_Area = "0";
-            }
-            if (AlarmStr.Substring(l - 14, 1) == "1")//后退进入禁止区域报警
-            {
-                data.Current.OutAlarm_Area = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.OutAlarm_Area_Warn == "1")
-                    data.Current.OutAlarm_Area_Warn = "0";
-            }
-            else
-            {
-                data.Current.OutAlarm_Area = "0";
-            }
-            if (AlarmStr.Substring(l - 15, 1) == "1")//左转进入禁止区域报警
-            {
-                data.Current.LeftAlarm_Area = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.LeftAlarm_Area_Warn == "1")
-                    data.Current.LeftAlarm_Area_Warn = "0";
-            }
-            else
-            {
-                data.Current.LeftAlarm_Area = "0";
-            }
-            if (AlarmStr.Substring(l - 16, 1) == "1")//右转进入禁止区域报警
-            {
-                data.Current.RightAlarm_Area = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.RightAlarm_Area_Warn == "1")
-                    data.Current.RightAlarm_Area_Warn = "0";
-            }
-            else
-            {
-                data.Current.RightAlarm_Area = "0";
+                vs.Add(Warning_type.区域保护报警);
+                data.is_warning = "Y";
             }
             #endregion
             #region 上限位bit16  下限位bit17 外限位bit18 内限位bit19 左限位bit20 右限位bit21
-            if (AlarmStr.Substring(l - 17, 1) == "1")//上升限位报警
+            if (AlarmStr.Substring(l - 17, 1) == "1" || AlarmStr.Substring(l - 18, 1) == "1" || AlarmStr.Substring(l - 19, 1) == "1" || AlarmStr.Substring(l - 20, 1) == "1" || AlarmStr.Substring(l - 21, 1) == "1" || AlarmStr.Substring(l - 22, 1) == "1")//上升限位报警
             {
-                data.Current.UpAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.UpAlarm_Warn == "1")
-                    data.Current.UpAlarm_Warn = "0";
+                vs.Add(Warning_type.限位报警);
+                data.is_warning = "Y";
             }
-            else
-            {
-                data.Current.UpAlarm = "0";
-            }
-            if (AlarmStr.Substring(l - 18, 1) == "1")//下降限位报警
-            {
-                data.Current.DownAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.DownAlarm_Warn == "1")
-                    data.Current.DownAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.DownAlarm = "0";
-            }
-            if (AlarmStr.Substring(l - 19, 1) == "1")//小车外限位报警
-            {
-                data.Current.OutAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.OutAlarm_Warn == "1")
-                    data.Current.OutAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.OutAlarm = "0";
-            }
-            if (AlarmStr.Substring(l - 20, 1) == "1")//小车内限位报警
-            {
-                data.Current.InAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.InAlarm_Warn == "1")
-                    data.Current.InAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.InAlarm = "0";
-            }
-            if (AlarmStr.Substring(l - 21, 1) == "1")//左转限位报警
-            {
-                data.Current.LeftAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.LeftAlarm_Warn == "1")
-                    data.Current.LeftAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.LeftAlarm = "0";
-            }
-            if (AlarmStr.Substring(l - 22, 1) == "1")//右转限位报警
-            {
-                data.Current.RightAlarm = "2";
-                flag = true;
-                //去掉预警与报警同时出现
-                if (data.Current.RightAlarm_Warn == "1")
-                    data.Current.RightAlarm_Warn = "0";
-            }
-            else
-            {
-                data.Current.RightAlarm = "0";
-            }
+            data.warning_type = vs.ToArray();
             #endregion
-
-            //报警标示
-            if (flag)
-                data.Current.Type = "2";
-            else
-                data.Current.Type = "0";
         }
-        /// <summary>
-        /// 预警标识
-        /// </summary>
-        public static void WarnFlag(GprsCraneDataObject data, string WarnStr)
-        {
-            int l = WarnStr.Length;
-            if (WarnStr.Substring(l - 5, 1) == "1")//倾斜预警
-            {
-                data.Current.AngleAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.AngleAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 4, 1) == "1")//力矩预警
-            {
-                data.Current.TorqueAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.TorqueAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 3, 1) == "1")//交叉干涉预警
-            {
-                data.Current.HitAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.HitAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 2, 1) == "1")//超重预警
-            {
-                data.Current.WeightAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.WeightAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 1, 1) == "1")//风速预警
-            {
-                data.Current.WindAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.WindAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 9, 1) == "1")//前进多机防碰撞预警
-            {
-                data.Current.InAlarm_Hit_Warn = "1";
-            }
-            else
-            {
-                data.Current.InAlarm_Hit_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 10, 1) == "1")//后退多机防碰撞预警
-            {
-                data.Current.OutAlarm_Hit_Warn = "1";
-            }
-            else
-            {
-                data.Current.OutAlarm_Hit_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 11, 1) == "1")//左转多机防碰撞预警
-            {
-                data.Current.LeftAlarm_Hit_Warn = "1";
-            }
-            else
-            {
-                data.Current.LeftAlarm_Hit_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 12, 1) == "1")//右转多机防碰撞预警
-            {
-                data.Current.RightAlarm_Hit_Warn = "1";
-            }
-            else
-            {
-                data.Current.RightAlarm_Hit_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 13, 1) == "1")//前进进入禁止区域预警
-            {
-                data.Current.InAlarm_Area_Warn = "1";
-            }
-            else
-            {
-                data.Current.InAlarm_Area_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 14, 1) == "1")//后退进入禁止区域预警
-            {
-                data.Current.OutAlarm_Area_Warn = "1";
-            }
-            else
-            {
-                data.Current.OutAlarm_Area_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 15, 1) == "1")//左转进入禁止区域预警
-            {
-                data.Current.LeftAlarm_Area_Warn = "1";
-            }
-            else
-            {
-                data.Current.LeftAlarm_Area_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 16, 1) == "1")//右转进入禁止区域预警
-            {
-                data.Current.RightAlarm_Area_Warn = "1";
-            }
-            else
-            {
-                data.Current.RightAlarm_Area_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 17, 1) == "1")//上升限位预警
-            {
-                data.Current.UpAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.UpAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 18, 1) == "1")//下降限位预警
-            {
-                data.Current.DownAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.DownAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 19, 1) == "1")//小车外限位预警
-            {
-                data.Current.OutAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.OutAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 20, 1) == "1")//小车内限位预警
-            {
-                data.Current.InAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.InAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 21, 1) == "1")//左转限位预警
-            {
-                data.Current.LeftAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.LeftAlarm_Warn = "0";
-            }
-            if (WarnStr.Substring(l - 22, 1) == "1")//右转限位预警
-            {
-                data.Current.RightAlarm_Warn = "1";
-            }
-            else
-            {
-                data.Current.RightAlarm_Warn = "0";
-            }
-        }
-        /// <summary>
-        /// 限位控制器状态
-        /// </summary>
-        public static void LimitFlag(GprsCraneDataObject data, string LimitStatus)
-        {
-            int l = LimitStatus.Length;
-            if (LimitStatus.Substring(l - 5, 1) == "1")//高度上限位减速状态
-            {
-                data.Current.LimitUpStatue_sub = "1";
-            }
-            else
-            {
-                data.Current.LimitUpStatue_sub = "0";
-            }
-            if (LimitStatus.Substring(l - 4, 1) == "1")//回转右限位减速状态
-            {
-                data.Current.LimitRightStatue_sub = "1";
-            }
-            else
-            {
-                data.Current.LimitRightStatue_sub = "0";
-            }
-            if (LimitStatus.Substring(l - 3, 1) == "1")//回转右限位状态
-            {
-                data.Current.LimitRightStatue = "1";
-            }
-            else
-            {
-                data.Current.LimitRightStatue = "0";
-            }
-            if (LimitStatus.Substring(l - 2, 1) == "1")//回转左限位减速状态
-            {
-                data.Current.LimitLeftStatue_sub = "1";
-            }
-            else
-            {
-                data.Current.LimitLeftStatue_sub = "0";
-            }
-            if (LimitStatus.Substring(l - 1, 1) == "1")//回转左限位状态
-            {
-                data.Current.LimitLeftStatue = "1";
-            }
-            else
-            {
-                data.Current.LimitLeftStatue = "0";
-            }
-            if (LimitStatus.Substring(l - 6, 1) == "1")//高度上限位状态
-            {
-                data.Current.LimitUpStatue = "1";
-            }
-            else
-            {
-                data.Current.LimitUpStatue = "0";
-            }
-            if (LimitStatus.Substring(l - 7, 1) == "1")//高度下限位状态
-            {
-                data.Current.LimitDownStatue = "1";
-            }
-            else
-            {
-                data.Current.LimitDownStatue = "0";
-            }
-            if (LimitStatus.Substring(l - 8, 1) == "1")//高度下限位换速状态
-            {
-                data.Current.LimitDownStatue_sub = "1";
-            }
-            else
-            {
-                data.Current.LimitDownStatue_sub = "0";
-            }
-            if (LimitStatus.Substring(l - 9, 1) == "1")//幅度外预减速状态
-            {
-                data.Current.LimitOutStatue_sub = "1";
-            }
-            else
-            {
-                data.Current.LimitOutStatue_sub = "0";
-            }
-            if (LimitStatus.Substring(l - 10, 1) == "1")//幅度外限位状态
-            {
-                data.Current.LimitOutStatue = "1";
-            }
-            else
-            {
-                data.Current.LimitOutStatue = "0";
-            }
-            if (LimitStatus.Substring(l - 11, 1) == "1")//幅度内限位状态
-            {
-                data.Current.LimitInStatue = "1";
-            }
-            else
-            {
-                data.Current.LimitInStatue = "0";
-            }
-            if (LimitStatus.Substring(l - 12, 1) == "1")//幅度内换速状态
-            {
-                data.Current.LimitInStatue_sub = "1";
-            }
-            else
-            {
-                data.Current.LimitInStatue_sub = "0";
-            }
-            if (LimitStatus.Substring(l - 13, 1) == "1")//风速预警限位状态
-            {
-                data.Current.LimitWindStatue_sub = "1";
-            }
-            else
-            {
-                data.Current.LimitWindStatue_sub = "0";
-            }
-            if (LimitStatus.Substring(l - 16, 1) == "1")//风速报警限位状态
-            {
-                data.Current.LimitWindStatue = "1";
-            }
-            else
-            {
-                data.Current.LimitWindStatue = "0";
-            }
-        }
-        /// <summary>
-        /// 报警短信
-        /// </summary>
-        //public static void AlarmMessge(GprsCraneDataObject data)
-        //{
-        //    if (data.Current.Type == "0")//无报警时 终止
-        //    {
-        //        return;
-        //    }
-        //    #region 发送报警短信
-        //    //如果当前报警时间  与 上次存入数据库时间 相差 大于60秒 才再次存入数据库
-        //    try
-        //    {
-        //        IGprsCraneDataComm gd = new GprsDataComm().CreateInstance();
-        //        //吊重，风速，碰撞，力矩，倾斜
-        //        string[] Alarm = { data.Current.WeightAlarm, data.Current.WindAlarm, data.Current.HitAlarm, data.Current.TorqueAlarm, data.Current.AngleAlarm };
-        //        int Times = gd.GetOnceAlarmTime(data.Current.Craneno, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Alarm);
-
-        //        if (Times < 300 && Times != -1)
-        //            return;
-
-        //        System.Data.DataTable dtProj = gd.GetCraneProj(data.Current.Craneno);
-
-        //        if (dtProj == null || dtProj.Rows.Count < 0)
-        //            return;
-
-        //        if (dtProj.Rows[0]["IsMsg"].ToString() != "1")
-        //            return;
-        //        string Telephone = dtProj.Rows[0]["PrincipalTel"].ToString();
-        //        if (Telephone.Length != 11 && Telephone.IndexOf(',') == -1)
-        //        {
-        //            Telephone = "";
-        //        }
-        //        //只有吊重，风速，力矩  ZT20170510更改
-        //        if (data.Current.WeightAlarm == "2" || data.Current.WindAlarm == "2" || data.Current.TorqueAlarm == "2" || data.Current.HitAlarm == "2" || data.Current.AngleAlarm == "2")
-        //        {
-        //            //短信列表
-        //            lock (MsgList.LsMsg)
-        //            {
-        //                string SendStr = Telephone + "@" + "工地:" + dtProj.Rows[0]["ProName"].ToString() + " 设备编号:" + data.Current.Craneno + " 时间:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 报警类型:" + (data.Current.TorqueAlarm == "2" ? "力矩 " : "") + (data.Current.WeightAlarm == "2" ? "超重 " : "") + (data.Current.HitAlarm == "2" ? "碰撞 " : "") + (data.Current.AngleAlarm == "2" ? "倾斜 " : "") + (data.Current.WindAlarm == "2" ? "风速 " : "");
-        //                MsgList.InsertCacheLs(SendStr);
-        //                try
-        //                {
-        //                    ToolAPI.XMLOperation.WriteLogXmlNoTail("短信写入缓存", SendStr);
-        //                }
-        //                catch (Exception) { }
-
-        //                //MsgList.InsertCacheLs("17010054624" + "@" + "工地:" + "北京测试" + " 设备编号:" + "399901" + " 时间:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 报警类型:应该是风速");
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //    }
-        //    #endregion
-        //}
-
         #endregion
 
         #region 心跳
@@ -1048,7 +354,7 @@ namespace ProtocolAnalysis
                             if (dev.Contains(sourId + "#"))
                             {
                                 string[] devcopy = dev.Split('#');
-                                data.Heartbeat.SN  = devcopy[1];
+                                data.Heartbeat.SN = devcopy[1];
                                 DBFrame dfcopy = DBFrame.DeepCopy(df);
                                 dfcopy.deviceid = devcopy[1];
                                 dfcopy.datatype = "heartbeat";
@@ -1066,7 +372,7 @@ namespace ProtocolAnalysis
 
                 }
             }
-            
+
 
             return rb;
         }
@@ -1092,13 +398,13 @@ namespace ProtocolAnalysis
             string craneNo = ConvertData.ToHexString(b, 5, 3);
             if (b[8] == 0x01)
             {
-                DB_MysqlTowerCrane.UpdateDataCongfig(craneNo, 2,true);
+                DB_MysqlTowerCrane.UpdateDataCongfig(craneNo, 2, true);
                 DB_MysqlTowerCrane.UpdateIPCommandIssued(craneNo, 2);
 
             }
             else if (b[8] == 0x00)
             {
-                DB_MysqlTowerCrane.UpdateDataCongfig(craneNo, 3,false);
+                DB_MysqlTowerCrane.UpdateDataCongfig(craneNo, 3, false);
                 DB_MysqlTowerCrane.UpdateIPCommandIssued(craneNo, 3);
 
 
@@ -1615,7 +921,7 @@ namespace ProtocolAnalysis
             #region 对应数据库操作
             switch (Commod)
             {
-                case 1: return DB_MysqlTowerCrane.IsExistCard(AuthenticationTemp.SN,AuthenticationTemp.KardID);//是否存在司机卡号
+                case 1: return DB_MysqlTowerCrane.IsExistCard(AuthenticationTemp.SN, AuthenticationTemp.KardID);//是否存在司机卡号
                 case 2: return DB_MysqlTowerCrane.IsExistCard(AuthenticationTemp.SN, AuthenticationTemp.KardID);//身份验证
                 case 3: DB_MysqlTowerCrane.UpdateIdentifyCurrent(AuthenticationTemp.SN, AuthenticationTemp.KardID); break;//删除卡号
                 case 4: return (byte)DB_MysqlTowerCrane.Pro_Authentication(AuthenticationTemp);//上班下班
@@ -1747,7 +1053,7 @@ namespace ProtocolAnalysis
                     }
                     au.IDCard = Encoding.ASCII.GetString(IDCard);
                     //访问数据库
-                    DataTable dt = DB_MysqlTowerCrane.GetDriverInfoByIDCard(au.SN,au.IDCard);  //获取司机相关信息
+                    DataTable dt = DB_MysqlTowerCrane.GetDriverInfoByIDCard(au.SN, au.IDCard);  //获取司机相关信息
                     if (dt.Rows.Count > 0)
                     {
                         au.empNo = dt.Rows[0]["empNo"].ToString().Trim();  //工号

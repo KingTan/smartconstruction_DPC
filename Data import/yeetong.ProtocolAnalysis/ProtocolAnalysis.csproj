@@ -38,7 +38,7 @@
       <HintPath>..\..\GOYO_Refactoring\GOYO_RefactoringPJ\bin\Debug\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SIXH.DBUtility">
-      <HintPath>..\GOYO.DLL\SIXH.DBUtility.dll</HintPath>
+      <HintPath>..\..\DPC\DPC\SIXH.DBUtility.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -132,6 +132,10 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DPC\DPC\DPC.csproj">
+      <Project>{5e159119-d903-4be1-a8e3-812776dbb144}</Project>
+      <Name>DPC</Name>
+    </ProjectReference>
     <ProjectReference Include="..\yeetong.Refactoring\Architecture.csproj">
       <Project>{f3acfb36-9b5b-48cf-ba2d-57aebdad15d2}</Project>
       <Name>Architecture</Name>

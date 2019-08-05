@@ -23,6 +23,7 @@ namespace DPC
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "POST";
                 request.ContentType = "application/json";
+                senddata = senddata.Replace("timestamp", "@timestamp");
                 request.ContentLength = senddata.Length;
                 string base64Credentials = GetEncodedCredentials();
                 request.Headers.Add("Authorization", "Basic " + base64Credentials);

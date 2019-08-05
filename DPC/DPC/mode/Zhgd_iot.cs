@@ -70,5 +70,6 @@ namespace DPC
         public static readonly string 人数报警 = "10";
         public static readonly string 防坠器报警 = "11";
         public static readonly string 高度报警 = "12";
+        public static readonly string 倾斜报警 = "13";
     }
 }

@@ -35,24 +35,9 @@ namespace ProtocolAnalysis
                 case 1: ProtocolPackageResolver_Lift(b, c, client); break;
                 //卸料
                 case 2: ProtocolPackageResolver_Unload(b, c, client); break;
-                //雾炮
-                case 3: ProtocolPackageResolver_FogGun(b, c, client); break;
+               
                 //扬尘
                 case 4: ProtocolPackageResolver_RaiseDustNoise(b, c, client); break;
-                //大体积混凝土
-                case 5: ProtocolPackageResolver_MassConcrete(b, c, client); break;
-                //安全帽
-                case 6: ProtocolPackageResolver_Softhat(b, c, client); break;
-                //红外对射
-                case 7: ProtocolPackageResolver_InfraredContrast(b, c, client); break;
-                //气体监测
-                case 8: ProtocolPackageResolver_GasDetection(b, c, client); break;
-                //身份验证相关
-                case 10: ProtocolPackageResolver_IdentityVerification(b, c, client); break;
-                //电表
-                case 12: ProtocolPackResolver_Electric(b, c, client); break;
-                //临边防护
-                case 13: ProtocolPackResolver_BorderProtection(b, c, client); break;
 
                 default: break;
 
@@ -162,30 +147,7 @@ namespace ProtocolAnalysis
         }
         #endregion
 
-        #region 雾炮
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_FogGun7A02 = ProtocolAnalysis.FogGun.GprsResolveDataV010002.OnResolveRecvMessage;
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_FogGun7A03 = ProtocolAnalysis.FogGun.GprsResolveDataV010003.OnResolveRecvMessage;
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_FogGun7A0200 = ProtocolAnalysis.FogGun.GprsResolveDataV020000.OnResolveRecvMessage;
-        public static void ProtocolPackageResolver_FogGun(byte[] b, int c, TcpSocketClient client)
-        {
-            TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-            if (b[2] == 0x01 && b[3] == 0x00 && b[4] == 0x02)
-            {
-                TcpExtendTemp.TVersion = "010002";
-                GoYOUnpack(b, c, client, "7A7A010002", "7B7B", OnResolveRecvMessagede_FogGun7A02);
-            }
-            if (b[2] == 0x01 && b[3] == 0x00 && b[4] == 0x03)
-            {
-                TcpExtendTemp.TVersion = "010003";
-                GoYOUnpack(b, c, client, "7A7A010003", "7B7B", OnResolveRecvMessagede_FogGun7A03);
-            }
-            if (b[2] == 0x02 && b[3] == 0x00 && b[4] == 0x00)
-            {
-                TcpExtendTemp.TVersion = "020000";
-                GoYOUnpack(b, c, client, "7A7A020000", "7B7B", OnResolveRecvMessagede_FogGun7A0200);
-            }
-        }
-        #endregion
+       
 
         #region 扬尘入口
         /// <summary>
@@ -273,105 +235,6 @@ namespace ProtocolAnalysis
         }
         #endregion
 
-        #region 大体积混凝土
-        public static void ProtocolPackageResolver_MassConcrete(byte[] b, int c, TcpSocketClient client)
-        {
-            GprsResolveData_Mc.OnResolveRecvMessage(b, c, client);
-
-            GprsResolveData_LRK.OnResolveRecvMessage(b, c, client);
-        }
-
-        #endregion
-
-
-        static OnResolveRecvMessagedelegate OnResolveRecvGprsResolveSoftHat_SO_V1 = GprsResolveSoftHat_SO_V1.OnResolveRecvMessage;
-        #region 安全帽
-        /// <summary>
-        /// 安全帽
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="c"></param>
-        /// <param name="client"></param>
-        public static void ProtocolPackageResolver_Softhat(byte[] b, int c, TcpSocketClient client)
-        {
-            //GprsResolveSoftHat.OnResolveRecvMessage(b, c, client);木兰的暂时用不着
-            TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-            if (b[2] == 0x01 && b[3] == 0x00)
-            {
-                TcpExtendTemp.TVersion = "0100";
-                GoYOUnpack(b, c, client, "7A7A0100", "7B7B", OnResolveRecvGprsResolveSoftHat_SO_V1);
-                //GprsResolveSoftHat_SO_V1.OnResolveRecvMessage(b,c,client);
-            }
-            else
-            {
-                GprsResolveSoftHat_SO.OnResolveRecvMessage(b, c, client);
-            }
-            
-        }
-        #endregion
-
-        #region 红外对射
-        /// <summary>
-        /// 红外对射
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="c"></param>
-        /// <param name="client"></param>
-        public static void ProtocolPackageResolver_InfraredContrast(byte[] b, int c, TcpSocketClient client)
-        {
-            GprsResolveInfraredContrast.OnResolveRecvMessage(b, c, client);
-        }
-        #endregion
-
-        #region 气体监测
-        /// <summary>
-        /// 气体监测
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="c"></param>
-        /// <param name="client"></param>
-        public static void ProtocolPackageResolver_GasDetection(byte[] b, int c, TcpSocketClient client)
-        {
-            string str = ConvertData.ToHexString(b, 0, 2);
-            if (str == "FEDC")
-            {
-                GprsResolveGasDetection.OnResolveRecvMessageAboutCO(b, c, client);
-            }
-            else
-            {
-                //甲烷乙炔共用方法
-                GprsResolveGasDetection.OnResolveRecvMessage(b, c, client);
-            }
-        }
-        #endregion
-        #region 定制身份验证
-        /// <summary>
-        /// 定制身份验证
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="c"></param>
-        /// <param name="client"></param>
-        public static void ProtocolPackageResolver_IdentityVerification(byte[] b, int c, TcpSocketClient client)
-        {
-            TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-            TcpExtendTemp.TVersion = "7E0100";
-            GprsResolve_IdentityVerification.OnResolveRecvMessage(b, c, client);
-        }
-        #endregion
-        #region 电表
-        /// <summary>
-        /// 电表
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="c"></param>
-        /// <param name="client"></param>
-        public static void ProtocolPackResolver_Electric(byte[] b, int c, TcpSocketClient client)
-        {
-            TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-            TcpExtendTemp.TVersion = "";
-            GprsResolveDataV101.ProtocolPackageResolver(b, c, client);
-        }
-        #endregion
         #region 拆包算法
         /// <summary>
         /// 拆包算法
@@ -407,23 +270,6 @@ namespace ProtocolAnalysis
                 }
             }
         }
-        /// <summary>
-        ///临边防护
-        /// </summary>
-        /// <param name="b"></param>
-        /// <param name="c"></param>
-        /// <param name="client"></param>
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_BorderProtectinV100000 = ProtocolAnalysis.BorderProtection.GprsResolveDataV010000.OnResolveRecvMessage;
-        public static void ProtocolPackResolver_BorderProtection(byte[] b, int c, TcpSocketClient client)
-        {
-            TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-            if (b[2] == 0x01 && b[3] == 0x00 && b[4] == 0x00)
-            {
-                TcpExtendTemp.TVersion = "010000";
-                GoYOUnpack(b, c, client, "7A7A010000", "7B7B", OnResolveRecvMessagede_BorderProtectinV100000);
-            }
-        }
-
         #endregion
     }
 }

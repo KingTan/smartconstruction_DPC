@@ -375,11 +375,8 @@ namespace ProtocolAnalysis.FogGun
         {
             try
             {
-                Frame_TimedControl ft = new Frame_TimedControl();
-                ft.DeviceNo = devno;
-                ft.Timeout = timeout;
-                int result = DB_MysqlFogGun.SaveTimedControl(ft, 0);
-                return result;
+               
+                return 0;
             }
             catch (Exception ex)
             {
@@ -397,7 +394,7 @@ namespace ProtocolAnalysis.FogGun
         {
             try
             {
-                int result = DB_MysqlFogGun.ManualControl(devno, type, 0);
+                int result = 0;
                 return result;
             }
             catch (Exception ex)

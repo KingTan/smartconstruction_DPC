@@ -41,12 +41,23 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TCPAPI">
+      <HintPath>..\..\Data import\yeetong.DLL\TCPAPI.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Data import\yeetong.ProtocolAnalysis\ProtocolAnalysis.csproj">
+      <Project>{c32e6799-bf9f-49f7-820a-e1b1fd186d3d}</Project>
+      <Name>ProtocolAnalysis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data import\yeetong.Refactoring\Architecture.csproj">
+      <Project>{f3acfb36-9b5b-48cf-ba2d-57aebdad15d2}</Project>
+      <Name>Architecture</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DPC\DPC.csproj">
       <Project>{5e159119-d903-4be1-a8e3-812776dbb144}</Project>
       <Name>DPC</Name>
