@@ -36,6 +36,10 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="SIXH.DBUtility, Version=19.7.24.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\SIXH.DBUtility.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,8 +53,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="mode\Zhgd_iot_personnel.cs" />
+    <Compile Include="mode\Zhgd_iot_dust_noise.cs" />
+    <Compile Include="mode\Zhgd_iot_lift.cs" />
+    <Compile Include="mode\Zhgd_iot_discharge.cs" />
+    <Compile Include="mode\Zhgd_iot_tower.cs" />
+    <Compile Include="operation\Tower_operation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Restful.cs" />
+    <Compile Include="mode\Zhgd_iot.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
