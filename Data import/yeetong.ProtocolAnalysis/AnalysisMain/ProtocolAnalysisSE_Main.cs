@@ -12,7 +12,6 @@ namespace ProtocolAnalysis
     {
         //用于塔吊和升降机的
         public delegate string OnResolveRecvMessagedelegate(byte[] b, int c, TcpSocketClient client);
-        public delegate string OnResoleRecvMessageUdpdelegate(byte[] b, int c, UdpState udp); //用于udp接收
         public static void ProtocolPackageResolver(byte[] b, int c, TcpSocketClient client)
         {
             switch (MainStatic.DeviceType)
@@ -60,37 +59,13 @@ namespace ProtocolAnalysis
         #endregion
 
         #region 升降机
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_7A06 = GprsResolveDataV010206.OnResolveRecvMessage;
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_7A09 = GprsResolveDataV010209.OnResolveRecvMessage;
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_7A10 = GprsResolveDataV010210.OnResolveRecvMessage;
-        static OnResolveRecvMessagedelegate OnResolveRecvMessagede_7A010300 = GprsResolveDataV010300.OnResolveRecvMessage;
         static OnResolveRecvMessagedelegate OnResolveRecvMessagede_7A010400 = GprsResolveDataV010400.OnResolveRecvMessage;
         public static void ProtocolPackageResolver_Lift(byte[] b, int c, TcpSocketClient client)
         {
             TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-            if (b[2] == 0x01 && b[3] == 0x02 && b[4] == 0x06)
+            if (b[2] == 0x01 && b[3] == 0x04 && b[4] == 0x00)
             {
-                TcpExtendTemp.TVersion = "010206";
-                GoYOUnpack(b, c, client, "7A7A010206", "7B7B", OnResolveRecvMessagede_7A06);
-            }
-            else if (b[2] == 0x01 && b[3] == 0x02 && b[4] == 0x09) //珠海的升降机
-            {
-                TcpExtendTemp.TVersion = "010209";
-                GoYOUnpack(b, c, client, "7A7A010209", "7B7B", OnResolveRecvMessagede_7A09);
-            }
-            else if (b[2] == 0x01 && b[3] == 0x02 && b[4] == 0x10)
-            {
-                TcpExtendTemp.TVersion = "010210";
-                GoYOUnpack(b, c, client, "7A7A010210", "7B7B", OnResolveRecvMessagede_7A10);
-            }
-            else if (b[2] == 0x01 && b[3] == 0x03 && b[4] == 0x00)
-            {
-                TcpExtendTemp.TVersion = "010300";
-                GoYOUnpack(b, c, client, "7A7A010300", "7B7B", OnResolveRecvMessagede_7A010300);
-            }
-            else if (b[2] == 0x01 && b[3] == 0x04 && b[4] == 0x00)
-            {
-                TcpExtendTemp.TVersion = "010300";
+                TcpExtendTemp.TVersion = "010400";
                 GoYOUnpack(b, c, client, "7A7A010400", "7B7B", OnResolveRecvMessagede_7A010400);
             }
         }

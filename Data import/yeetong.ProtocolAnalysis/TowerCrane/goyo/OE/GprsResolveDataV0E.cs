@@ -238,8 +238,9 @@ namespace ProtocolAnalysis
                 vs.Add(Warning_type.限位报警);
                 data.is_warning = "Y";
             }
-            data.warning_type = vs.ToArray();
+
             #endregion
+            data.warning_type = vs.ToArray();
         }
         #endregion
         #region 心跳

@@ -59,7 +59,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnalysisMain\ProtocolAnalysisSE_MainUdp.cs" />
     <Compile Include="CommandIssuedMain\CommandIssued_Main.cs" />
     <Compile Include="DisCharge\CommandIssued_DisCharge.cs" />
     <Compile Include="DisCharge\DB_MysqlDisCharge.cs" />
@@ -71,15 +70,8 @@
     <Compile Include="DisCharge\Model\Frame_RunTime.cs" />
     <Compile Include="DisCharge\Model\Frame_TimeCalibration.cs" />
     <Compile Include="EntityReader.cs" />
-    <Compile Include="Lift\010206\GprsResolveDataV010206.cs" />
-    <Compile Include="Lift\010209\GprsResolveDataV010209.cs" />
     <Compile Include="DBFrame.cs" />
-    <Compile Include="Lift\010210\GprsResolveDataV010210.cs" />
-    <Compile Include="Lift\010300\GprsResolveDataV010300.cs" />
-    <Compile Include="Lift\010400\GprsResolveDataV010400.cs" />
-    <Compile Include="Lift\CommandIssued_Lift.cs" />
-    <Compile Include="Lift\GprsLiftBaseInfo.cs" />
-    <Compile Include="Lift\Mysql\DB_MysqlLift.cs" />
+    <Compile Include="Lift\goyo\010400\GprsResolveDataV010400.cs" />
     <Compile Include="RaiseDustNoise\GOYO\CommandIssued_dust.cs" />
     <Compile Include="RaiseDustNoise\GOYO\model\gdust_Current.cs" />
     <Compile Include="RaiseDustNoise\GOYO\model\gdust_Heartbeat.cs" />

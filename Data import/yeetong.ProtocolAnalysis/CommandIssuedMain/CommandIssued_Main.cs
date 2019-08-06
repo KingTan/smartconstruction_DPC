@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Architecture;
 using ProtocolAnalysis.DisCharge;
-using ProtocolAnalysis.Lift;
 using TCPAPI;
 
 namespace ProtocolAnalysis
@@ -21,9 +20,6 @@ namespace ProtocolAnalysis
                     break;
                 //升降机
                 case 1:
-                    CommandIssuedInitEvent += CommandIssued_Lift.Crane_SetIPConfig;
-                    CommandIssuedInitEvent += CommandIssued_Lift.Crane_SetControl;
-                    CommandIssuedInitEvent += CommandIssued_Lift.Lift_featureIssued;
                     break;
                 //卸料
                 case 2: CommandIssuedInitEvent += CommandIssued_DisCharge.Crane_SetIPConfig; break;
