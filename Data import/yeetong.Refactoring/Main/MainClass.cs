@@ -5,19 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ToolAPI;
-
-/*---------------------------------------------
-    Copyright (c) 2017 共友科技
-    版权所有：共友科技
-    创建人名：赵通
-    创建描述：程序主入口
-    创建时间：2017.10.11
-    文件功能描述：开启和关闭服务监听
-    修改人名：
-    修改描述：
-    修改标识：
-    修改时间：
-    ---------------------------------------------*/
 namespace Architecture
 {
     public class MainClass

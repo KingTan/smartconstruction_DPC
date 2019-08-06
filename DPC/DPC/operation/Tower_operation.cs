@@ -25,10 +25,6 @@ namespace DPC
         //获取设备项目同步字典线程
         static Thread Sync_equipment_project_T;
         /// <summary>
-        /// 设备项目字典
-        /// </summary>
-        private static Dictionary<string, string> Equipment_project;
-        /// <summary>
         /// 同步设备项目
         /// </summary>
         static void Sync_equipment_project()
@@ -54,14 +50,11 @@ namespace DPC
                     {
                         string equipment_sn = dr["equipment_sn"].ToString();
                         string project_id = dr["project_id"].ToString();
-                        if (!Equipment_project_temp.ContainsKey(equipment_sn))
-                            Equipment_project_temp.Add(equipment_sn, project_id);
+                        //存入redis中
+                        string key = "equipment:projectid:01_01:" + equipment_sn;
+                        TimeSpan timeSpan = new TimeSpan(0, 0, 300);
+                        RedisCacheHelper.Add(key, project_id, timeSpan);
                     }
-                    //开始替换字典
-                    //lock (Equipment_project)
-                    //{
-                        Equipment_project = Equipment_project_temp;
-                    //}
                 }
             }
             catch (Exception ex)
@@ -85,10 +78,13 @@ namespace DPC
         {
             try
             {
-                if (Equipment_project != null && Equipment_project.ContainsKey(zhgd_Iot_Tower_Current.sn))
+                //获取redis中的项目
+                string key = "equipment:projectid:01_01:" + zhgd_Iot_Tower_Current.sn;
+                string value = RedisCacheHelper.Get<string>(key);
+                if (value != null)
                 {
                     zhgd_Iot_Tower_Current.create_time = DPC_Tool.GetTimeStamp();
-                    zhgd_Iot_Tower_Current.project_id = Equipment_project[zhgd_Iot_Tower_Current.sn];
+                    zhgd_Iot_Tower_Current.project_id = value;
                     zhgd_Iot_Tower_Current.equipment_type = Equipment_type.塔机;
                     //这里面应该还有工作运行的判断以及运行序列码得赋值
                     if (working_state.ContainsKey(zhgd_Iot_Tower_Current.sn))
@@ -100,6 +96,8 @@ namespace DPC
                     }
                     //执行put方法，把实时数据推走
                     Put_tower_current(zhgd_Iot_Tower_Current);
+                    //进行司机记录推送
+                    Get_equminet_driver(zhgd_Iot_Tower_Current.sn, zhgd_Iot_Tower_Current.driver_id_code);
                 }
             }
             catch (Exception ex)
@@ -153,6 +151,65 @@ namespace DPC
         {
             string key = "equipment:online_time:01_01:"+sn;
             RedisCacheHelper.Add(key, time);
+        }
+        #endregion
+
+        #region 上传司机的考勤记录
+        public static void Update_equminet_driver(string sn, string driver_code)
+        {
+            string key = "equipment:driver:01_01:" + sn;
+            string value = driver_code + "&" + DateTime.Now.ToString();
+            RedisCacheHelper.Add(key, value);
+        }
+        public static void Get_equminet_driver(string sn, string driver_code)
+        {
+            string key = "equipment:driver:01_01:" + sn;
+            string value = RedisCacheHelper.Get<string>(key);
+            if(value==null)
+            {
+                Update_driver_attendance_asyn.BeginInvoke(sn, driver_code,DateTime.Now.ToString(),null,null);
+                Update_equminet_driver(sn, driver_code);
+            }
+            else
+            {
+                string[] code_time = value.Split('&');
+                if(code_time.Length>1)
+                {
+                    if(code_time[0]!= driver_code)
+                    {
+                        Update_driver_attendance_asyn.BeginInvoke(sn, driver_code, DateTime.Now.ToString(), null, null);
+                        Update_equminet_driver(sn, driver_code);
+                    }
+                    else 
+                    {
+                        DateTime dateTime = DateTime.Parse(code_time[1]);
+                        if((DateTime.Now- dateTime).TotalHours>4)
+                        {
+                            Update_driver_attendance_asyn.BeginInvoke(sn, driver_code, DateTime.Now.ToString(), null, null);
+                            Update_equminet_driver(sn, driver_code);
+                        }
+                    }
+                }
+                else
+                {
+                    Update_driver_attendance_asyn.BeginInvoke(sn, driver_code, DateTime.Now.ToString(), null, null);
+                    Update_equminet_driver(sn, driver_code);
+                }
+            }
+        }
+        public static Action<string,string, string> Update_driver_attendance_asyn = Update_driver_attendance;
+        public static void Update_driver_attendance(string sn,string driver_code,string datetime)
+        {
+            try
+            {
+                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "39.104.20.2", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
+                string sql = string.Format("INSERT into biz_equipment_operator_log (equipment_sn,equipment_type,id_card_no,attendance_type,attendance_time,create_time,update_time) VALUES('{0}','01_01','{1}','{2}','{3}',NOW(),NOW())", sn, driver_code, "01", datetime);
+                int  result = dbNet.ExecuteNonQuery(sql, null);
+            }
+            catch (Exception ex)
+            {
+                ToolAPI.XMLOperation.WriteLogXmlNoTail("塔吊Update_driver_attendance异常", ex.Message);
+            }
         }
         #endregion
     }
