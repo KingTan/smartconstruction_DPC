@@ -107,7 +107,7 @@ namespace DPC
 
         public string Get_work_cycles_no(Zhgd_iot_lift_current zhgd_Iot_Lift_Current)
         {
-            //大于0.2t就认为触发了工作循环得条件了
+            //速度大于0就认为触发了工作循环得条件了
             if (zhgd_Iot_Lift_Current.speed > 0)
             {
                 if (zhgd_Iot_Lift_Current.is_warning == "Y")

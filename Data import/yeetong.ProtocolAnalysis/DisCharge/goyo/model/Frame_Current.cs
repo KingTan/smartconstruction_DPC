@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProtocolAnalysis.DisCharge
+namespace GOYO_ProtocolAnalysis.DisCharge
 {
     public class Frame_Current
     {

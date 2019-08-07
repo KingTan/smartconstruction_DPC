@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProtocolAnalysis.DisCharge
+namespace GOYO_ProtocolAnalysis.DisCharge
 {
-    public class Frame_Heartbeat
+    public class Frame_RunTime
     {
         /// <summary>
         /// 设备编号
@@ -16,19 +16,26 @@ namespace ProtocolAnalysis.DisCharge
             set;
         }
         /// <summary>
-        /// 接收的RTC
+        /// 总运行时间
         /// </summary>
-        public DateTime? RTC
+        public decimal TotalRunTime
         {
             get;
             set;
         }
-
-        public Frame_Heartbeat()
+        /// <summary>
+        /// 本次开机运行时间
+        /// </summary>
+        public decimal PowerOnTime
+        {
+            get;
+            set;
+        }
+        public Frame_RunTime()
         {
             DeviceNo = "";
-            RTC = null;
+            TotalRunTime = 0;
+            PowerOnTime = 0;
         }
-
     }
 }

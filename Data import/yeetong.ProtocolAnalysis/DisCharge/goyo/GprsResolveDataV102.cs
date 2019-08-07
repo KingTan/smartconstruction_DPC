@@ -4,7 +4,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Architecture;
-using ProtocolAnalysis.DisCharge;
+using DPC;
+using GOYO_ProtocolAnalysis.DisCharge;
 using Newtonsoft.Json;
 using TCPAPI;
 using ToolAPI;
@@ -38,60 +39,40 @@ namespace ProtocolAnalysis
                     string dataMagStr = dataHexString.Substring(16, datalength * 2);
                     #endregion
 
-                    DBFrame df = new DBFrame();
-                    df.contenthex = ConvertData.ToHexString(b, 0, c);
-                    df.version = (client.External.External as TcpClientBindingExternalClass).TVersion;
-                    TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-
                     byte[] dataMagAry = ConvertData.HexToByte(dataMagStr);
                     switch (command)
                     {
                         //心跳
                         case 0x00:
-                            ReceiveDispose_Heartbeat(dataMagAry, client, ref df);
+                            ReceiveDispose_Heartbeat(dataMagAry, client);
                             break;
                         //实时数据
                         case 0x01:
-                            ReceiveDispose_Current(dataMagAry, client, true, ref df);
+                            ReceiveDispose_Current(dataMagAry, client, true);
                             break;
                         //保留
                         case 0x02:
                             break;
                         //离线数据
                         case 0x03:
-                            ReceiveDispose_Current(dataMagAry, client, false, ref df);
+                            ReceiveDispose_Current(dataMagAry, client, false);
                             break;
                         //参数信息
                         case 0x04:
-                            ReceiveDispose_ParameterConfig(dataMagAry, client, ref df);
-                            break;
-                        //IP地址配置
-                        case 0x05:
-                            ReceiveDispose_IPConfiguration(dataMagAry, TcpExtendTemp);
+                            ReceiveDispose_ParameterConfig(dataMagAry, client);
                             break;
                         //保留
                         case 0x06:
                             break;
                         //设备运行时间
                         case 0x07:
-                            ReceiveDispose_RunTime(dataMagAry, client, ref df);
+                            ReceiveDispose_RunTime(dataMagAry, client);
                             break;
                         //时间校准
                         case 0x08:
-                            ReceiveDispose_TimeCalibration(dataMagAry, client, ref df);
+                            ReceiveDispose_TimeCalibration(dataMagAry, client);
                             break;
                         default: break;
-                    }
-
-
-                    if (TcpExtendTemp.EquipmentID == null || TcpExtendTemp.EquipmentID.Equals(""))
-                    {
-                        TcpExtendTemp.EquipmentID = df.deviceid;
-                    }
-                    //存入数据库
-                    if (df.contentjson != null && df.contentjson != "")
-                    {
-                        DB_MysqlDisCharge.SaveDisCharge(df);
                     }
                 }
                 return "";
@@ -106,37 +87,35 @@ namespace ProtocolAnalysis
         //心跳
         //7A 7A 01 00 02 00 0E 00 31 32 33 34 35 36 37 38 17 10 31 17 34 00 C9 6A 7B 7B
         //7a 7a 01 00 02 00 07 00 01 17 10 31 17 38 29 27 cb 7b 7b 
-        static public void ReceiveDispose_Heartbeat(byte[] data, TcpSocketClient client, ref DBFrame df)
+        static public void ReceiveDispose_Heartbeat(byte[] data, TcpSocketClient client)
         {
             try
             {
-                Frame_Heartbeat dataFrame = new Frame_Heartbeat();
                 //设备编号
                 byte[] sn = new byte[8];   //设备编号
                 for (int i = 0; i < 8; i++)
                 {
                     sn[i] = data[i];
                 }
-                dataFrame.DeviceNo = Encoding.ASCII.GetString(sn);  //获取设备编号ASCII
+                string DeviceNo = Encoding.ASCII.GetString(sn);  //获取设备编号ASCII
+                DateTime dateTime = DateTime.Now  ;
                 //RTC
                 string tStr = ConvertData.ToHexString(data, 8, 6);
                 try
                 {
-                    dataFrame.RTC = DateTime.ParseExact(tStr, "yyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+                    dateTime = DateTime.ParseExact(tStr, "yyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
                 }
                 catch (Exception)
                 {
-                    dataFrame.RTC = null;
+                    dateTime = DateTime.Now;
                 }
                 //拼接应答
-                byte[] result = SendJoint_Heartbeat(dataFrame);
+                byte[] result = SendJoint_Heartbeat();
                 if (result != null)
                     client.SendBuffer(result);
 
-                //包装
-                df.deviceid = dataFrame.DeviceNo;
-                df.datatype = "heartbeat";
-                df.contentjson = JsonConvert.SerializeObject(dataFrame);
+                //更新redis
+                DPC.Discharge_operation.Update_equminet_last_online_time(DeviceNo, DPC_Tool.GetTimeStamp(dateTime));
             }
             catch (Exception)
             { }
@@ -144,49 +123,52 @@ namespace ProtocolAnalysis
         //实时数据
         //7A 7A 01 00 02 01 15 00 31 32 33 34 35 36 37 38 17 10 31 17 34 00 01 00 02 00 03 00 01 15 03 7B 7B
         //有报警7A 7A 01 00 02 01 15 00 31 32 33 34 35 36 37 38 17 10 31 17 34 00 01 00 02 00 03 00 0f DB E2 7B 7B
-        static public void ReceiveDispose_Current(byte[] data, TcpSocketClient client, bool isCurrent, ref DBFrame df)
+        static public void ReceiveDispose_Current(byte[] data, TcpSocketClient client, bool isCurrent)
         {
             try
             {
-                Frame_Current dataFrame = new Frame_Current();
+                Zhgd_iot_discharge_current dataFrame = new Zhgd_iot_discharge_current();
                 //设备编号
                 byte[] sn = new byte[8];   //设备编号
                 for (int i = 0; i < 8; i++)
                 {
                     sn[i] = data[i];
                 }
-                dataFrame.DeviceNo = Encoding.ASCII.GetString(sn);  //获取设备编号ASCII
+                dataFrame.sn = Encoding.ASCII.GetString(sn);  //获取设备编号ASCII
                 //RTC
                 string tStr = ConvertData.ToHexString(data, 8, 6);
                 try
                 {
-                    dataFrame.RTC = DateTime.ParseExact(tStr, "yyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+                    dataFrame.timestamp =DPC_Tool.GetTimeStamp( DateTime.ParseExact(tStr, "yyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture));
                 }
                 catch (Exception)
                 {
-                    dataFrame.RTC = DateTime.Now;
+                    dataFrame.timestamp = DPC_Tool.GetTimeStamp(DateTime.Now);
                 }
                 //当前载重
                 UShortValue us = new UShortValue();
                 us.bValue1 = data[14];
                 us.bValue2 = data[15];
-                dataFrame.Load = us.sValue;
+                dataFrame.weight = us.sValue;
                 //倾角X
                 ShortValue s = new ShortValue();
                 s.bValue1 = data[16];
                 s.bValue2 = data[17];
-                dataFrame.AngleX = (double)((double)(s.sValue) / 100d);
+                dataFrame.dip_x = (double)((double)(s.sValue) / 100d);
                 //倾角Y
                 s.bValue1 = data[18];
                 s.bValue2 = data[19];
-                dataFrame.AngleY = (double)((double)(s.sValue) / 100d);
+                dataFrame.dip_y = (double)((double)(s.sValue) / 100d);
                 //报警状态
                 string state = Convert.ToString(data[20], 2).PadLeft(8, '0');
-                dataFrame.AlarmType = state;
-                dataFrame.WeightWarning = (byte)(state[7] - 48);
-                dataFrame.WeightAlarm = (byte)(state[6] - 48);
-                dataFrame.AngleWarning = (byte)(state[5] - 48);
-                dataFrame.AngleAlarm = (byte)(state[4] - 48);
+                List<string> vs = new List<string>();
+                dataFrame.is_warning = "N";
+              //  dataFrame.WeightWarning = (byte)(state[7] - 48);
+              if((byte)(state[6] - 48) == 1) { vs.Add(Warning_type.重量告警); dataFrame.is_warning = "Y"; }
+                //dataFrame.WeightAlarm = (byte)(state[6] - 48);
+                // dataFrame.AngleWarning = (byte)(state[5] - 48);
+                if ((byte)(state[4] - 48)==1) { vs.Add(Warning_type.重量告警); dataFrame.is_warning = "Y"; }
+                //dataFrame.AngleAlarm = (byte)(state[4] - 48);
                 //离线数据应答
                 if (!isCurrent)
                 {
@@ -195,10 +177,8 @@ namespace ProtocolAnalysis
                         client.SendBuffer(result);
                 }
 
-                //包装
-                df.deviceid = dataFrame.DeviceNo;
-                df.datatype = "current";
-                df.contentjson = JsonConvert.SerializeObject(dataFrame);
+                //进行数据put 
+                Discharge_operation.Send_discharge_Current(dataFrame);
             }
             catch (Exception)
             { }
@@ -206,7 +186,7 @@ namespace ProtocolAnalysis
         //参数配置
         //7A 7A 01 00 02 04 32 00 31 32 33 34 35 36 37 38 17 10 31 17 34 00 17 10 31 01 00 01 01 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0a 00 0b 00 0c 00 0d 00 31 32 33 D4 18 7b 7b
         //7a 7a 01 00 02 04 00 00 00 00 7b 7b 
-        static public void ReceiveDispose_ParameterConfig(byte[] data, TcpSocketClient client, ref DBFrame df)
+        static public void ReceiveDispose_ParameterConfig(byte[] data, TcpSocketClient client)
         {
             try
             {
@@ -311,35 +291,14 @@ namespace ProtocolAnalysis
                 byte[] result = SendJoint_ParameterConfig(dataFrame);
                 if (result != null)
                     client.SendBuffer(result);
-
-                //包装
-                df.deviceid = dataFrame.DeviceNo;
-                df.datatype = "parameterUpload";
-                df.contentjson = JsonConvert.SerializeObject(dataFrame);
             }
             catch (Exception)
             { }
-        }
-        //IP配置帧设备的应答
-        static public void ReceiveDispose_IPConfiguration(byte[] data, TcpClientBindingExternalClass TcpExtendTemp)
-        {
-            try
-            {
-                Frame_IPConfiguration dataFrame = new Frame_IPConfiguration();
-                dataFrame.DeviceNo = TcpExtendTemp.EquipmentID;
-                //缓存 等待写入数据库
-                DB_MysqlDisCharge.UpdateIPConfiguration(dataFrame, 2,true);
-                DB_MysqlDisCharge.RecordCommandIssued(dataFrame.DeviceNo, 2);
-
-            }
-            catch (Exception)
-            { }
-
         }
         //运行时间帧
         //7A 7A 01 00 02 07 1c 00 31 32 33 34 35 36 37 38 01 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 2F D2 7b 7b
         //7a 7a 01 00 02 07 00 00 00 00 7b 7b
-        static public void ReceiveDispose_RunTime(byte[] data, TcpSocketClient client, ref DBFrame df)
+        static public void ReceiveDispose_RunTime(byte[] data, TcpSocketClient client)
         {
             try
             {
@@ -369,11 +328,7 @@ namespace ProtocolAnalysis
                 byte[] result = SendJoint_RunTime();
                 if (result != null)
                     client.SendBuffer(result);
-
-                //包装
-                df.deviceid = dataFrame.DeviceNo;
-                df.datatype = "runtimeEp";
-                df.contentjson = JsonConvert.SerializeObject(dataFrame);
+                
             }
             catch (Exception)
             { }
@@ -381,7 +336,7 @@ namespace ProtocolAnalysis
         //时间校准
         //7A 7A 01 00 02 08 0e 00 31 32 33 34 35 36 37 38 17 11 01 09 58 00 54 FA 7b 7b
         //7a 7a 01 00 02 08 07 00 01 17 11 01 10 09 02 a2 6b 7b 7b
-        static public void ReceiveDispose_TimeCalibration(byte[] data, TcpSocketClient client, ref DBFrame df)
+        static public void ReceiveDispose_TimeCalibration(byte[] data, TcpSocketClient client)
         {
             try
             {
@@ -407,11 +362,7 @@ namespace ProtocolAnalysis
                 byte[] result = SendJoint_TimeCalibration(dataFrame);
                 if (result != null)
                     client.SendBuffer(result);
-
-                //包装
-                df.deviceid = dataFrame.DeviceNo;
-                df.datatype = "checkTime";
-                df.contentjson = JsonConvert.SerializeObject(dataFrame);
+                
             }
             catch (Exception)
             { }
@@ -420,7 +371,7 @@ namespace ProtocolAnalysis
 
         #region 服务器发到设备的拼接
         //心跳
-        static public byte[] SendJoint_Heartbeat(Frame_Heartbeat Heartbeat)
+        static public byte[] SendJoint_Heartbeat()
         {
             try
             {
@@ -437,25 +388,8 @@ namespace ProtocolAnalysis
                 //数据长度
                 msgTemp.Add(0x07);
                 msgTemp.Add(0x00);
-                if (Heartbeat.RTC == null)
-                {
-                    //时间标识
-                    msgTemp.Add(0x01);
-                }
-                else
-                {
-                    double compare = Math.Abs((DateTime.Now - (DateTime)Heartbeat.RTC).TotalMinutes);
-                    if (compare > 1)//需要校验
-                    {
-                        //时间标识
-                        msgTemp.Add(0x01);
-                    }
-                    else//不需要校验
-                    {
-                        //时间标识
-                        msgTemp.Add(0x00);
-                    }
-                }
+                //需要校验
+                msgTemp.Add(0x01);
                 //RTC
                 DateTime dt = DateTime.Now;
                 msgTemp.Add(byte.Parse(dt.Year.ToString().Substring(2, 2), System.Globalization.NumberStyles.HexNumber));

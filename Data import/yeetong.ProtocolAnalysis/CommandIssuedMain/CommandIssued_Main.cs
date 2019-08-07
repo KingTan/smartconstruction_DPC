@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Architecture;
-using ProtocolAnalysis.DisCharge;
 using TCPAPI;
 
 namespace ProtocolAnalysis
@@ -22,7 +21,7 @@ namespace ProtocolAnalysis
                 case 1:
                     break;
                 //卸料
-                case 2: CommandIssuedInitEvent += CommandIssued_DisCharge.Crane_SetIPConfig; break;
+                //case 2: CommandIssuedInitEvent += CommandIssued_DisCharge.Crane_SetIPConfig; break;
                 //扬尘
                 case 4:
                     CommandIssuedInitEvent += CommandIssued_LW.GetGetRealTimeData;

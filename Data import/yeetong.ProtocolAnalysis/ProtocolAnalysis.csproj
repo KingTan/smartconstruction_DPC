@@ -60,15 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandIssuedMain\CommandIssued_Main.cs" />
-    <Compile Include="DisCharge\CommandIssued_DisCharge.cs" />
-    <Compile Include="DisCharge\DB_MysqlDisCharge.cs" />
-    <Compile Include="DisCharge\GprsResolveDataV102.cs" />
-    <Compile Include="DisCharge\Model\Frame_Current.cs" />
-    <Compile Include="DisCharge\Model\Frame_Heartbeat.cs" />
-    <Compile Include="DisCharge\Model\Frame_IPConfiguration.cs" />
-    <Compile Include="DisCharge\Model\Frame_ParameterConfig.cs" />
-    <Compile Include="DisCharge\Model\Frame_RunTime.cs" />
-    <Compile Include="DisCharge\Model\Frame_TimeCalibration.cs" />
+    <Compile Include="DisCharge\goyo\GprsResolveDataV102.cs" />
+    <Compile Include="DisCharge\goyo\model\Frame_Current.cs" />
+    <Compile Include="DisCharge\goyo\model\Frame_Heartbeat.cs" />
+    <Compile Include="DisCharge\goyo\model\Frame_IPConfiguration.cs" />
+    <Compile Include="DisCharge\goyo\model\Frame_ParameterConfig.cs" />
+    <Compile Include="DisCharge\goyo\model\Frame_RunTime.cs" />
+    <Compile Include="DisCharge\goyo\model\Frame_TimeCalibration.cs" />
     <Compile Include="EntityReader.cs" />
     <Compile Include="DBFrame.cs" />
     <Compile Include="Lift\goyo\010400\GprsResolveDataV010400.cs" />

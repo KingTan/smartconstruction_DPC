@@ -42,7 +42,7 @@ namespace DPC
             {
                 DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "39.104.20.2", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
                 Dictionary<string, string> Equipment_project_temp = new Dictionary<string, string>();
-                string sql = "select distinct  equipment_sn,project_id from biz_project_equipment where equipment_type ='01_02'";
+                string sql = "select distinct  equipment_sn,project_id from biz_project_equipment where equipment_type ='" + Equipment_type.升降机 + "'";
                 DataTable dt = dbNet.ExecuteDataTable(sql, null);
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -51,7 +51,7 @@ namespace DPC
                         string equipment_sn = dr["equipment_sn"].ToString();
                         string project_id = dr["project_id"].ToString();
                         //存入redis中
-                        string key = "equipment:projectid:01_02:" + equipment_sn;
+                        string key = "equipment:projectid:" + Equipment_type.升降机 + ":" + equipment_sn;
                         TimeSpan timeSpan = new TimeSpan(0, 0, 300);
                         RedisCacheHelper.Add(key, project_id, timeSpan);
                     }
@@ -79,7 +79,7 @@ namespace DPC
             try
             {
                 //获取redis中的项目
-                string key = "equipment:projectid:01_02:" + zhgd_Iot_Lift_Current.sn;
+                string key = "equipment:projectid:" + Equipment_type.升降机 + ":" + zhgd_Iot_Lift_Current.sn;
                 string value = RedisCacheHelper.Get<string>(key);
                 if (value != null)
                 {
@@ -149,7 +149,7 @@ namespace DPC
         #region 更新设备在线时间
         public static void Update_equminet_last_online_time(string sn,long time)
         {
-            string key = "equipment:online_time:01_02:"+sn;
+            string key = "equipment:online_time:" + Equipment_type.升降机 + ":" + sn;
             RedisCacheHelper.Add(key, time);
         }
         #endregion
@@ -157,13 +157,13 @@ namespace DPC
         #region 上传司机的考勤记录
         public static void Update_equminet_driver(string sn, string driver_code)
         {
-            string key = "equipment:driver:01_02:" + sn;
+            string key = "equipment:driver:" + Equipment_type.升降机 + ":" + sn;
             string value = driver_code + "&" + DateTime.Now.ToString();
             RedisCacheHelper.Add(key, value);
         }
         public static void Get_equminet_driver(string sn, string driver_code)
         {
-            string key = "equipment:driver:01_02:" + sn;
+            string key = "equipment:driver:" + Equipment_type.升降机 + ":" + sn;
             string value = RedisCacheHelper.Get<string>(key);
             if(value==null)
             {
@@ -203,7 +203,7 @@ namespace DPC
             try
             {
                 DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "39.104.20.2", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
-                string sql = string.Format("INSERT into biz_equipment_operator_log (equipment_sn,equipment_type,id_card_no,attendance_type,attendance_time,create_time,update_time) VALUES('{0}','01_02','{1}','{2}','{3}',NOW(),NOW())", sn, driver_code, "01", datetime);
+                string sql = string.Format("INSERT into biz_equipment_operator_log (equipment_sn,equipment_type,id_card_no,attendance_type,attendance_time,create_time,update_time) VALUES('{0}','{4}','{1}','{2}','{3}',NOW(),NOW())", sn, driver_code, "01", datetime, Equipment_type.升降机);
                 int  result = dbNet.ExecuteNonQuery(sql, null);
             }
             catch (Exception ex)
