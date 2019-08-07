@@ -18,38 +18,46 @@ namespace DPC
         /// <summary>
         /// pm10
         /// </summary>
-        public int pm10 { get; set; }
+        public double pm10 { get; set; }
         /// <summary>
         /// tsp
         /// </summary>
-        public int tsp { get; set; }
+        public double tsp { get; set; }
         /// <summary>
         /// 噪音 
         /// </summary>
-        public string noise { get; set; }
+        public double noise { get; set; }
         /// <summary>
         /// 温度  
         /// </summary>
-        public string temperature { get; set; }
+        public double temperature { get; set; }
         /// <summary>
         /// 湿度  
         /// </summary>
-        public string humidity { get; set; }
+        public double humidity { get; set; }
         /// <summary>
         /// 风速  
         /// </summary>
-        public string wind_speed { get; set; }
+        public double wind_speed { get; set; }
         /// <summary>
         /// 风级 
         /// </summary>
-        public string wind_grade { get; set; }
+        public int wind_grade { get; set; }
+        /// <summary>
+        /// 风向
+        /// </summary>
+        public double wind_direction { get; set; }
         /// <summary>
         /// 气压 
         /// </summary>
-        public string air_pressure { get; set; }
+        public double air_pressure { get; set; }
         /// <summary>
         /// 降雨量 
         /// </summary>
-        public string rainfall { get; set; }
+        public double rainfall { get; set; }
+        /// <summary>
+        /// AQI
+        /// </summary>
+        public double aqi { get; set; }
     }
 }

@@ -24,8 +24,7 @@ namespace ProtocolAnalysis
                 //case 2: CommandIssuedInitEvent += CommandIssued_DisCharge.Crane_SetIPConfig; break;
                 //扬尘
                 case 4:
-                    CommandIssuedInitEvent += CommandIssued_LW.GetGetRealTimeData;
-                    CommandIssuedInitEvent += CommandIssued_dust.Dust_SetIPConfig;
+                   
                     break;
                 case 13://临边防护
                     break;

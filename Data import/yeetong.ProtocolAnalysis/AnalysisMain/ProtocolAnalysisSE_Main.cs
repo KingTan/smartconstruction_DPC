@@ -97,76 +97,21 @@ namespace ProtocolAnalysis
         {
             //符合字节流协议处理
             TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-            //2323
-            if (c > 2 && b[0] == 0x23 && b[1] == 0x23)//蓝丰设备
-            {
-                string dataTemp = Encoding.ASCII.GetString(b);
-                if (dataTemp.Contains("WWYC"))
-                {
-                    TcpExtendTemp.TVersion = "wwyc";
-                    ProtocolAnalysis_WWYC.OnResolveRecvMessage(b, c, client);
-                }
-                else
-                {
-                    TcpExtendTemp.TVersion = "lf";
-                    ProtocolAnalysis_LF.OnResolveRecvMessage(b, c, client);
-                }
-            }
-            //01 03 60
-            //else if (c > 3 && b[0] == 0x01 && b[1] == 0x03 && b[2] == 0x60)//瞭望设备
-            //{
-            //    TcpExtendTemp.TVersion = "lw";
-            //    ProtocolAnalysis_LW.Unpack(b, c, client);
-            //}
-            //ff aa 
-            else if (c > 2 && b[0] == 0xFF && b[1] == 0xAA)//中科正奇设备
-            {
-                TcpExtendTemp.TVersion = "zkzq";
-                ProtocolAnalysis_ZKZQ.Unpack(b, c, client);
-            }
             // ** ** ** ** 5E ** ** ** 02
-            else if (c > 8 && b[3] == 0x5E && b[7] == 0x02)//创塔设备
+            if (c > 8 && b[3] == 0x5E && b[7] == 0x02)//创塔设备
             {
                 TcpExtendTemp.TVersion = "ct";
                 ProtocolAnalysis_CT.OnResolveRecvMessage(b, c, client);
             }
-            //威海精讯  fe dc
-            else if (c > 2 && b[0] == 0xfe && b[1] == 0xdc)
-            {
-                //ToolAPI.XMLOperation.WriteLogXmlNoTail("1", "1");
-                TcpExtendTemp.TVersion = "whjx";
-                ProtocolAnalysis_WHJX.Unpack(b, c, client);
-            }
+           
             else if (b[0] == 0x7A && b[1] == 0x7A)
             {
                 TcpExtendTemp.TVersion = "goyo";
-                if (b[2] == 0x01 && b[3] == 0x00 && b[4] == 0x00)
-                {
-                    GoYOUnpack(b, c, client, "7A7A010000", "7B7B", ProtocolAnalysis_GOYO.OnResolveRecvMessage);
-                }
-                else if (b[2] == 0x01 && b[3] == 0x00 && b[4] == 0x03)
-                {
-                    GoYOUnpack(b, c, client, "7A7A010003", "7B7B", ProtocolAnalysis_New.OnResolveRecvMessage);
-                }
-                else if (b[2] == 0x01 && b[3] == 0x00 && b[4] == 0x04)
+                if (b[2] == 0x01 && b[3] == 0x00 && b[4] == 0x04)
                 {
                     GoYOUnpack(b, c, client, "7A7A010004", "7B7B", ProtocolAnalysis_V1.OnResolveRecvMessage);
                 }
 
-            }
-            else
-            {
-                TcpExtendTemp.TVersion = "goyo";
-                if (b[0] == 0x44 || b[0] == 0x45)
-                {
-                    byte[] t = new byte[35];
-                    for (int i = 0; i < 35; i++)
-                    {
-                        t[i] = b[i];
-                    }
-
-                    Protocolanalysis_XA.OnResolveRecvMessage(t, t.Length, client); 
-                }
             }
 
         }

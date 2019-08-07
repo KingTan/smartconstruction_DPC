@@ -102,6 +102,7 @@
     <Compile Include="mode\Zhgd_iot_lift.cs" />
     <Compile Include="mode\Zhgd_iot_discharge.cs" />
     <Compile Include="mode\Zhgd_iot_tower.cs" />
+    <Compile Include="operation\Dust_noise_operation.cs" />
     <Compile Include="operation\Discharge_operation.cs" />
     <Compile Include="operation\Lift_operation.cs" />
     <Compile Include="operation\Tower_operation.cs" />
