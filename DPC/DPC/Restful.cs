@@ -22,7 +22,7 @@ namespace DPC
                 #region http有返回
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "POST";
-                request.ContentType = "application/json";
+                request.ContentType = "application/json;charset=UTF-8";
                 senddata = senddata.Replace("timestamp", "@timestamp");
                 request.ContentLength = senddata.Length;
                 string base64Credentials = GetEncodedCredentials();

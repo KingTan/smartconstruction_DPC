@@ -107,7 +107,7 @@ namespace DPC
                     }
                     zhgd_Iot_dust_noise_Current.warning_type = vs.ToArray();
                     //进行AQI计算
-                    zhgd_Iot_dust_noise_Current.aqi = 1;//明天我找刘凡要一个AQI的计算方法
+                    zhgd_Iot_dust_noise_Current.aqi = Get_aqi(zhgd_Iot_dust_noise_Current.pm2_5);
                     //执行put方法，把实时数据推走
                     Put_dust_noise_current(zhgd_Iot_dust_noise_Current);
                     //更新在线时间
@@ -146,6 +146,109 @@ namespace DPC
         {
             string key = "equipment:online_time:" + Equipment_type.扬尘噪音 + ":" + sn;
             RedisCacheHelper.Add(key, time);
+        }
+        #endregion
+
+        #region aqi算法
+        static double Get_aqi(double PM25)
+        {
+            try
+            {
+                double iaqiMin = 0;
+                double iaqiMax = 0;
+                double pm25Min = 0;
+                double pm25Max = 0;
+                if (PM25 >= 0 && PM25 < 35)
+                {
+                    pm25Min = 0;
+                    pm25Max = 35;
+                    iaqiMin = 0;
+                    iaqiMax = 50;
+                }
+                if (PM25 >= 35 && PM25 < 75)
+                {
+                    pm25Min = 35;
+                    pm25Max = 75;
+                    iaqiMin = 50;
+                    iaqiMax = 100;
+                }
+                if (PM25 >= 75 && PM25 < 115)
+                {
+                    pm25Min = 75;
+                    pm25Max = 115;
+                    iaqiMin = 100;
+                    iaqiMax = 150;
+                }
+                if (PM25 >= 115 && PM25 < 150)
+                {
+                    pm25Min = 115;
+                    pm25Max = 150;
+                    iaqiMin = 150;
+                    iaqiMax = 200;
+                }
+                if (PM25 >= 150 && PM25 < 250)
+                {
+                    pm25Min = 150;
+                    pm25Max = 250;
+                    iaqiMin = 200;
+                    iaqiMax = 300;
+                }
+                if (PM25 >= 250 && PM25 < 350)
+                {
+                    pm25Min = 250;
+                    pm25Max = 350;
+                    iaqiMin = 300;
+                    iaqiMax = 400;
+                }
+                if (PM25 >= 350 && PM25 < 500)
+                {
+                    pm25Min = 350;
+                    pm25Max = 500;
+                    iaqiMin = 400;
+                    iaqiMax = 500;
+                }
+                if (PM25 >= 500)
+                {
+                    pm25Min = 350;
+                    pm25Max = 500;
+                    iaqiMin = 400;
+                    iaqiMax = 500;
+                }
+                double iaqi = (iaqiMax - iaqiMin) / (pm25Max - pm25Min) * (PM25 - pm25Min) + iaqiMin;
+                //if (iaqi > 0 && iaqi <= 50)
+                //{
+                //    grade = 1;
+                //}
+                //if (iaqi > 50 && iaqi <= 100)
+                //{
+                //    grade = 2;
+                //}
+                //if (iaqi > 100 && iaqi <= 150)
+                //{
+                //    grade = 3;
+                //}
+                //if (iaqi > 150 && iaqi <= 200)
+                //{
+                //    grade = 4;
+                //}
+                //if (iaqi > 200 && iaqi <= 300)
+                //{
+                //    grade = 5;
+                //}
+                //if (iaqi > 300 && iaqi <= 500)
+                //{
+                //    grade = 6;
+                //}
+                //if (iaqi > 500)
+                //{
+                //    grade = 7;
+                //}
+                return iaqi;
+            }
+            catch(Exception ex)
+            {
+                return 0;
+            }
         }
         #endregion
     }

@@ -102,6 +102,7 @@
     <Compile Include="mode\Zhgd_iot_lift.cs" />
     <Compile Include="mode\Zhgd_iot_discharge.cs" />
     <Compile Include="mode\Zhgd_iot_tower.cs" />
+    <Compile Include="operation\Personnel_operation.cs" />
     <Compile Include="operation\Dust_noise_operation.cs" />
     <Compile Include="operation\Discharge_operation.cs" />
     <Compile Include="operation\Lift_operation.cs" />
@@ -115,6 +116,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="协议\升降机监控系统终端与主站远程通信协议TCP.doc" />
+    <None Include="协议\卸料平台监控系统终端与主站远程通信协议_设备接入.doc" />
+    <None Include="协议\塔吊监控系统终端与主站远程通信协议TCP.doc" />
+    <None Include="协议\扬尘噪声监控系统通讯协议_设备接入.docx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

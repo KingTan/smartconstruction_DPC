@@ -17,15 +17,15 @@ namespace test_DPC
             //DPC.Restful.Post(url, content);
 
 
-            MainClass mc = new MainClass();
-            //解析
-            Subject sub = new Subject();
-            sub.DataAnalysis += ProtocolAnalysisSE_Main.ProtocolPackageResolver;
-            //命令下发
-            CommandIssued_Main.CommandIssued_MainInit();
-            sub.CommandSending += CommandIssued_Main.CommandIssuedInitEvent;
-            mc.App_Open(sub);
-            Console.ReadLine();
+            //MainClass mc = new MainClass();
+            ////解析
+            //Subject sub = new Subject();
+            //sub.DataAnalysis += ProtocolAnalysisSE_Main.ProtocolPackageResolver;
+            ////命令下发
+            //CommandIssued_Main.CommandIssued_MainInit();
+            //sub.CommandSending += CommandIssued_Main.CommandIssuedInitEvent;
+            //mc.App_Open(sub);
+            //Console.ReadLine();
 
 
             //RedisCacheHelper.Add("塔吊1", 1565021089001);
@@ -37,6 +37,18 @@ namespace test_DPC
             //string value = RedisCacheHelper.Get<string>(key);
             //key = "equipment:online_time:01_01:"  + "123456";
             //long value1 = RedisCacheHelper.Get<long>(key);
+
+            //人员测试
+            Zhgd_iot_personnel_records zhgd_Iot_Personnel_Records = new Zhgd_iot_personnel_records();
+            zhgd_Iot_Personnel_Records.timestamp = DPC_Tool.GetTimeStamp(DateTime.Now);
+            zhgd_Iot_Personnel_Records.project_code = "123456";
+            zhgd_Iot_Personnel_Records.sn = "1";
+            zhgd_Iot_Personnel_Records.gate_no = "0";
+            zhgd_Iot_Personnel_Records.channel_no = "进";
+            zhgd_Iot_Personnel_Records.cert_mode = Cert_mode.IC卡;
+            zhgd_Iot_Personnel_Records.in_or_out = In_or_out.进;
+            zhgd_Iot_Personnel_Records.personal_id_code = "1234567894524852";
+            Personnel_operation.Send_personnel_records(zhgd_Iot_Personnel_Records);
         }
     }
 }

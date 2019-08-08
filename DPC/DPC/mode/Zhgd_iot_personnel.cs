@@ -20,9 +20,13 @@ namespace DPC
         /// </summary>
         public long create_time { get; set; }
         /// <summary>
-        /// 项目ID
+        /// 项目ID 对内
         /// </summary>
         public string project_id { get; set; }
+        /// <summary>
+        /// 项目编码 对外
+        /// </summary>
+        public string project_code { get; set; }
         /// <summary>
         /// 设备类型 参考设备类型字典
         /// </summary>

@@ -55,6 +55,7 @@ namespace ProtocolAnalysis
                 //int sss = ConvertDataInt32(ConvertData.ToHexString(b, 12, 4));//4Unsigned Integer设备编号
                 data.sn = ConvertDataUInt32(ConvertData.ToHexString(b, 12, 4)).ToString();//4Unsigned Integer设备编号
                 data.timestamp = ConvertDataInt32(ConvertData.ToHexString(b, 16, 4));//4Unisgned时间戳(unixtime)
+                data.timestamp = data.timestamp * 1000;
                 // data.Data_type = short.Parse(ConvertData.ToHexString(b, 18, 4));//4	Unsigned Short数据类型类型
 
                 //data.SPM = ((Decimal)ConvertDataInt32(ConvertData.ToHexString(b, 20, 4))) / (Decimal)10000;//4	Unsigned Integer粉尘数据（需要除10000）
