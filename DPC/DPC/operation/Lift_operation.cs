@@ -98,6 +98,8 @@ namespace DPC
                     Put_lift_current(zhgd_Iot_Lift_Current);
                     //进行司机记录推送
                     Get_equminet_driver(zhgd_Iot_Lift_Current.sn, zhgd_Iot_Lift_Current.driver_id_code);
+                    //更新redis
+                    DPC.Lift_operation.Update_equminet_last_online_time(zhgd_Iot_Lift_Current.sn, zhgd_Iot_Lift_Current.timestamp);
                 }
             }
             catch (Exception ex)

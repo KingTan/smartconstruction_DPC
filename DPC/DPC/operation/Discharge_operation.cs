@@ -96,6 +96,8 @@ namespace DPC
                     }
                     //执行put方法，把实时数据推走
                     Put_discharge_current(zhgd_Iot_discharge_Current);
+                    //更新redis
+                    DPC.Discharge_operation.Update_equminet_last_online_time(zhgd_Iot_discharge_Current.sn, zhgd_Iot_discharge_Current.timestamp);
                 }
             }
             catch (Exception ex)
