@@ -48,6 +48,22 @@ namespace DPC
         /// </summary>
         public double dip_y { get; set; }
         /// <summary>
+        /// 大臂长
+        /// </summary>
+        public double boom_arm_length { get; set; }
+        /// <summary>
+        /// 平衡臂
+        /// </summary>
+        public double balance_arm_length { get; set; }
+        /// <summary>
+        /// 塔身高
+        /// </summary>
+        public double tower_body_height { get; set; }
+        /// <summary>
+        /// 塔冒高
+        /// </summary>
+        public double tower_hat_height { get; set; }
+        /// <summary>
         /// 司机识别码
         /// </summary>
         public string driver_id_code { get; set; }
