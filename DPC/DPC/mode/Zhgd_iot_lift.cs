@@ -48,6 +48,10 @@ namespace DPC
         /// </summary>
         public double dip_y { get; set; }
         /// <summary>
+        /// 楼高度
+        /// </summary>
+        public double floor_height { get; set; }
+        /// <summary>
         /// 门状态
         /// </summary>
         public string door_status { get; set; }
