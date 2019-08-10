@@ -41,10 +41,24 @@ namespace DPC
         /// 构造
         /// </summary>
         /// <param name="zhgd_Iot_discharge_Current"></param>
-        public static Zhgd_iot_discharge_working Get_Zhgd_iot_discharge_working(Zhgd_iot_discharge_current zhgd_Iot_discharge_Current)
+        //public static Zhgd_iot_discharge_working Get_Zhgd_iot_discharge_working(Zhgd_iot_discharge_current zhgd_Iot_discharge_Current)
+        //{
+        //    Zhgd_iot_discharge_working z = zhgd_Iot_discharge_Current as Zhgd_iot_discharge_working;
+        //    return z;
+        //}
+        public static Zhgd_iot_discharge_working Get_Zhgd_iot_discharge_working(Zhgd_iot_discharge_current parent)
         {
-            Zhgd_iot_discharge_working z = zhgd_Iot_discharge_Current as Zhgd_iot_discharge_working;
-            return z;
+            Zhgd_iot_discharge_working child = new Zhgd_iot_discharge_working();
+            var ParentType = typeof(Zhgd_iot_discharge_current);
+            var Properties = ParentType.GetProperties();
+            foreach (var Propertie in Properties)
+            {
+                if (Propertie.CanRead && Propertie.CanWrite)
+                {
+                    Propertie.SetValue(child, Propertie.GetValue(parent, null), null);
+                }
+            }
+            return child;
         }
     }
 
@@ -94,6 +108,7 @@ namespace DPC
                     //put运行数据到ES里
                     Zhgd_iot_discharge_working ztw = Zhgd_iot_discharge_working.Get_Zhgd_iot_discharge_working(zhgd_Iot_discharge_Current);
                     ztw.work_cycles_warning = is_work_cycles_warning;
+                    ztw.work_cycles_no = work_cycles_no;
                     //异步运行
                     Discharge_operation.Put_work_cycles_event.BeginInvoke(ztw, null, null);
                     //进行初始化操作

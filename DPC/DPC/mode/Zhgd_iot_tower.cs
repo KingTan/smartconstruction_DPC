@@ -185,6 +185,7 @@ namespace DPC
                     //put运行数据到ES里
                     Zhgd_iot_tower_working ztw = Zhgd_iot_tower_working.Get_Zhgd_iot_tower_working(zhgd_Iot_Tower_Current);
                     ztw.work_cycles_warning = is_work_cycles_warning;
+                    ztw.work_cycles_no = work_cycles_no;
                     //异步运行
                     Tower_operation.Put_work_cycles_event.BeginInvoke(ztw,null,null);
                     //进行初始化操作

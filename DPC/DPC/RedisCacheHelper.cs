@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 namespace DPC
 {
@@ -16,7 +18,13 @@ namespace DPC
 
         static RedisCacheHelper()
         {
-            var redisHostStr = "127.0.0.1:6379";
+            //Assembly myAssembly = Assembly.GetEntryAssembly();
+            //string path = myAssembly.Location;
+            //DirectoryInfo dr = new DirectoryInfo(path);
+            //path = dr.Parent.ToString();  //当前目录的上一级目录
+
+            var redisHostStr =  ToolAPI.INIOperate.IniReadValue("netSqlGroup", "redisaddr", Application.StartupPath + "\\Config.ini");
+            //var redisHostStr = "127.0.0.1:6379";
 
             if (!string.IsNullOrEmpty(redisHostStr))
             {
