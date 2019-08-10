@@ -85,10 +85,28 @@ namespace DPC
         /// 构造
         /// </summary>
         /// <param name="zhgd_Iot_Tower_Current"></param>
-        public static Zhgd_iot_tower_working Get_Zhgd_iot_tower_working(Zhgd_iot_tower_current zhgd_Iot_Tower_Current)
+        //public static Zhgd_iot_tower_working Get_Zhgd_iot_tower_working(Zhgd_iot_tower_current zhgd_Iot_Tower_Current)
+        //{
+        //    Zhgd_iot_tower_working z = new Zhgd_iot_tower_working();
+        //    Zhgd_iot_tower_current zhgd_Iot_Tower_Currenta = z;
+        //    zhgd_Iot_Tower_Currenta = zhgd_Iot_Tower_Current;
+        //    z.work_cycles_warning = "";
+        //    return z;
+        //}
+
+        public static Zhgd_iot_tower_working Get_Zhgd_iot_tower_working(Zhgd_iot_tower_current parent)
         {
-            Zhgd_iot_tower_working z = zhgd_Iot_Tower_Current as Zhgd_iot_tower_working;
-            return z;
+            Zhgd_iot_tower_working child = new Zhgd_iot_tower_working();
+            var ParentType = typeof(Zhgd_iot_tower_current);
+            var Properties = ParentType.GetProperties();
+            foreach (var Propertie in Properties)
+            {
+                if (Propertie.CanRead && Propertie.CanWrite)
+                {
+                    Propertie.SetValue(child, Propertie.GetValue(parent, null), null);
+                }
+            }
+            return child;
         }
     }
     /// <summary>

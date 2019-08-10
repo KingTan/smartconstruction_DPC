@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TCPAPI;
 
@@ -27,6 +28,9 @@ namespace ProtocolAnalysis.Iot_v1.operation
                     //数据错误
                     string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.data_error, Result_code.data_error_des));
                     client.SendMessage(sendmessage);
+                    //杀死该socket
+                    Thread.Sleep(1000);
+                    client.DisSocket();
                 }
                 else if(sf.frame_type== Frame_type.注册帧)
                 {
@@ -37,6 +41,7 @@ namespace ProtocolAnalysis.Iot_v1.operation
                         string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.vendor_code_error, Result_code.vendor_code_error_des));
                         client.SendMessage(sendmessage);
                         //杀死该socket
+                        Thread.Sleep(1000);
                         client.DisSocket();
                     }
                     else
@@ -51,12 +56,13 @@ namespace ProtocolAnalysis.Iot_v1.operation
                 else if (sf.frame_type == Frame_type.心跳帧)
                 {
                     TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-                    TcpExtendTemp.uuid = "";//frame_token
+                    //TcpExtendTemp.uuid = "";//frame_token
                     if (TcpExtendTemp.uuid == null || TcpExtendTemp.uuid == "" || TcpExtendTemp.uuid != sf.frame_token)
                     {   //帧token错误
                         string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.frame_token_error, Result_code.frame_token_error_des));
                         client.SendMessage(sendmessage);
                         //杀死该socket
+                        Thread.Sleep(1000);
                         client.DisSocket();
                     }
                     else
@@ -69,12 +75,13 @@ namespace ProtocolAnalysis.Iot_v1.operation
                 else if (sf.frame_type == Frame_type.数据帧)
                 {
                     TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-                    TcpExtendTemp.uuid = "";//frame_token
+                    //TcpExtendTemp.uuid = "";//frame_token
                     if (TcpExtendTemp.uuid == null || TcpExtendTemp.uuid == "" || TcpExtendTemp.uuid != sf.frame_token)
                     {   //帧token错误
                         string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.frame_token_error, Result_code.frame_token_error_des));
                         client.SendMessage(sendmessage);
                         //杀死该socket
+                        Thread.Sleep(1000);
                         client.DisSocket();
                     }
                     else
@@ -92,6 +99,7 @@ namespace ProtocolAnalysis.Iot_v1.operation
                     string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.data_error, Result_code.data_error_des));
                     client.SendMessage(sendmessage);
                     //杀死该socket
+                    Thread.Sleep(1000);
                     client.DisSocket();
                 }
             }
@@ -99,9 +107,11 @@ namespace ProtocolAnalysis.Iot_v1.operation
             {
                 if(client!=null)
                 {
-                    string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.unknown_error, Result_code.vendor_code_error_des));
+                    string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.unknown_error, Result_code.unknown_error_des));
                     client.SendMessage(sendmessage);
+
                     //杀死该socket
+                    Thread.Sleep(1000);
                     client.DisSocket();
                 }
             }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Architecture;
 using TCPAPI;
 using ToolAPI;
+using ProtocolAnalysis.Iot_v1.operation;
 namespace ProtocolAnalysis
 {
     public class ProtocolAnalysisSE_Main
@@ -16,6 +17,8 @@ namespace ProtocolAnalysis
         {
             switch (MainStatic.DeviceType)
             {
+                //物联网通用 -1
+                case -1: Iot_send_frame.OnResolveRecvMessage(b, c, client); break;
                 //塔吊
                 case 0: ProtocolPackageResolver_TowerCrane(b, c, client); break;
                 //升降机
@@ -24,7 +27,6 @@ namespace ProtocolAnalysis
                 case 2: ProtocolPackageResolver_Unload(b, c, client); break;
                 //扬尘
                 case 4: ProtocolPackageResolver_RaiseDustNoise(b, c, client); break;
-
                 default: break;
 
             }
