@@ -40,7 +40,7 @@ namespace DPC
         {
             try
             {
-                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "39.104.20.2", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
+                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "172.24.108.167", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
                 Dictionary<string, string> Equipment_project_temp = new Dictionary<string, string>();
                 string sql = "select bpe.equipment_sn,bpe.project_id,bwn.pm25_warn_value,bwn.pm10_warn_value,bwn.noise_warn_value from biz_warn_config_dust_noise as bwn,biz_project_equipment as bpe where bwn.equipment_id = bpe.equipment_id and bpe.equipment_type='" + Equipment_type.扬尘噪音 + "'";
                 DataTable dt = dbNet.ExecuteDataTable(sql, null);

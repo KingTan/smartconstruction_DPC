@@ -42,7 +42,7 @@ namespace ProtocolAnalysis.Iot_v1.operation
         {
             try
             {
-                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "39.104.20.2", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
+                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "172.24.108.167", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
                 Dictionary<string, string> Equipment_project_temp = new Dictionary<string, string>();
                 string sql = "select distinct  supplier_code,supplier_abbreviation from biz_supplier ";
                 DataTable dt = dbNet.ExecuteDataTable(sql, null);

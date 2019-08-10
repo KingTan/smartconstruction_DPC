@@ -40,7 +40,7 @@ namespace DPC
         {
             try
             {
-                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "39.104.20.2", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
+                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "172.24.108.167", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
                 Dictionary<string, string> Equipment_project_temp = new Dictionary<string, string>();
                 string sql = "select distinct  equipment_sn,project_id from biz_project_equipment where equipment_type ='" + Equipment_type.升降机 + "'";
                 DataTable dt = dbNet.ExecuteDataTable(sql, null);
@@ -204,7 +204,7 @@ namespace DPC
         {
             try
             {
-                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "39.104.20.2", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
+                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "172.24.108.167", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
                 string sql = string.Format("INSERT into biz_equipment_operator_log (equipment_sn,equipment_type,id_card_no,attendance_type,attendance_time,create_time,update_time) VALUES('{0}','{4}','{1}','{2}','{3}',NOW(),NOW())", sn, driver_code, "01", datetime, Equipment_type.升降机);
                 int  result = dbNet.ExecuteNonQuery(sql, null);
             }
