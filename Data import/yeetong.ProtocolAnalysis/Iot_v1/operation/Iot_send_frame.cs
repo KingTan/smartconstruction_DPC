@@ -32,65 +32,115 @@ namespace ProtocolAnalysis.Iot_v1.operation
                     Thread.Sleep(1000);
                     client.DisSocket();
                 }
-                else if(sf.frame_type== Frame_type.注册帧)
+                //长链接
+                else if(sf.short_link==null)
                 {
-                    string frame_token  = Register_operation.Judge_vendor_code(sf.data);
-                    if(string.IsNullOrEmpty(frame_token))
+                    if (sf.frame_type == Frame_type.注册帧)
                     {
-                        //数据错误
-                        string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.vendor_code_error, Result_code.vendor_code_error_des));
-                        client.SendMessage(sendmessage);
-                        //杀死该socket
-                        Thread.Sleep(1000);
-                        client.DisSocket();
+                        string frame_token = Register_operation.Judge_vendor_code(sf.data);
+                        if (string.IsNullOrEmpty(frame_token))
+                        {
+                            //数据错误
+                            string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.vendor_code_error, Result_code.vendor_code_error_des));
+                            client.SendMessage(sendmessage);
+                            //杀死该socket
+                            Thread.Sleep(1000);
+                            client.DisSocket();
+                        }
+                        else
+                        {
+                            TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
+                            TcpExtendTemp.uuid = frame_token;//frame_token
+                                                             //发送正确的应答
+                            string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(new Register_reply_frame() { frame_token = frame_token }));
+                            client.SendMessage(sendmessage);
+                        }
                     }
-                    else
+                    else if (sf.frame_type == Frame_type.心跳帧)
                     {
                         TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-                        TcpExtendTemp.uuid = frame_token;//frame_token
-                        //发送正确的应答
-                        string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame( new Register_reply_frame() { frame_token = frame_token }));
-                        client.SendMessage(sendmessage);
+                        //TcpExtendTemp.uuid = "";//frame_token
+                        if (TcpExtendTemp.uuid == null || TcpExtendTemp.uuid == "" || TcpExtendTemp.uuid != sf.frame_token)
+                        {   //帧token错误
+                            string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.frame_token_error, Result_code.frame_token_error_des));
+                            client.SendMessage(sendmessage);
+                            //杀死该socket
+                            Thread.Sleep(1000);
+                            client.DisSocket();
+                        }
+                        else
+                        {
+                            //正确应答
+                            string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.success, Result_code.success_des));
+                            client.SendMessage(sendmessage);
+                        }
                     }
-                }
-                else if (sf.frame_type == Frame_type.心跳帧)
-                {
-                    TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-                    //TcpExtendTemp.uuid = "";//frame_token
-                    if (TcpExtendTemp.uuid == null || TcpExtendTemp.uuid == "" || TcpExtendTemp.uuid != sf.frame_token)
-                    {   //帧token错误
-                        string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.frame_token_error, Result_code.frame_token_error_des));
+                    else if (sf.frame_type == Frame_type.数据帧)
+                    {
+                        TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
+                        //TcpExtendTemp.uuid = "";//frame_token
+                        if (TcpExtendTemp.uuid == null || TcpExtendTemp.uuid == "" || TcpExtendTemp.uuid != sf.frame_token)
+                        {   //帧token错误
+                            string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.frame_token_error, Result_code.frame_token_error_des));
+                            client.SendMessage(sendmessage);
+                            //杀死该socket
+                            Thread.Sleep(1000);
+                            client.DisSocket();
+                        }
+                        else
+                        {
+                            //正确应答
+                            string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.success, Result_code.success_des));
+                            client.SendMessage(sendmessage);
+                            //todo解析
+                            Data_frame_operation.Data_operation(sf.equipment_type, sf.data);
+                        }
+                    }
+                    else
+                    {
+                        //数据错误
+                        string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.data_error, Result_code.data_error_des));
                         client.SendMessage(sendmessage);
                         //杀死该socket
                         Thread.Sleep(1000);
                         client.DisSocket();
                     }
+                }
+                //短链接
+                else if(sf.short_link == "true")
+                {
+                    if (sf.frame_type == Frame_type.数据帧)
+                    {
+                        bool frame_token = Register_operation.Judge_vendor_code(sf.frame_token);
+                        if (!frame_token)//厂商验证码不正确
+                        {
+                            //数据错误
+                            string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.vendor_code_error, Result_code.vendor_code_error_des));
+                            client.SendMessage(sendmessage);
+                            //杀死该socket
+                            Thread.Sleep(1000);
+                            client.DisSocket();
+                        }
+                        else//厂商验证码正确
+                        {
+                            //正确应答
+                            string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.success, Result_code.success_des));
+                            client.SendMessage(sendmessage);
+                            //todo解析
+                            Data_frame_operation.Data_operation(sf.equipment_type, sf.data);
+                            //短链接差不多就杀死这个链接
+                            Thread.Sleep(3000);
+                            client.DisSocket();
+                        }
+                    }
                     else
                     {
-                        //正确应答
-                        string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.success, Result_code.success_des));
-                        client.SendMessage(sendmessage);
-                    }
-                }
-                else if (sf.frame_type == Frame_type.数据帧)
-                {
-                    TcpClientBindingExternalClass TcpExtendTemp = client.External.External as TcpClientBindingExternalClass;
-                    //TcpExtendTemp.uuid = "";//frame_token
-                    if (TcpExtendTemp.uuid == null || TcpExtendTemp.uuid == "" || TcpExtendTemp.uuid != sf.frame_token)
-                    {   //帧token错误
-                        string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.frame_token_error, Result_code.frame_token_error_des));
+                        //数据错误
+                        string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.data_error, Result_code.data_error_des));
                         client.SendMessage(sendmessage);
                         //杀死该socket
                         Thread.Sleep(1000);
                         client.DisSocket();
-                    }
-                    else
-                    {
-                        //正确应答
-                        string sendmessage = JsonConvert.SerializeObject(Iot_reply_frame.Get_reply_frame(Result_code.success, Result_code.success_des));
-                        client.SendMessage(sendmessage);
-                        //todo解析
-                        Data_frame_operation.Data_operation(sf.equipment_type,sf.data);
                     }
                 }
                 else

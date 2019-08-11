@@ -18,11 +18,6 @@ namespace DPC
 
         static RedisCacheHelper()
         {
-            //Assembly myAssembly = Assembly.GetEntryAssembly();
-            //string path = myAssembly.Location;
-            //DirectoryInfo dr = new DirectoryInfo(path);
-            //path = dr.Parent.ToString();  //当前目录的上一级目录
-
             var redisHostStr =  ToolAPI.INIOperate.IniReadValue("netSqlGroup", "redisaddr", Application.StartupPath + "\\Config.ini");
             //var redisHostStr = "127.0.0.1:6379";
 

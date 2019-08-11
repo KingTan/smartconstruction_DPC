@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace DPC
 {
@@ -40,7 +41,13 @@ namespace DPC
         {
             try
             {
-                DbHelperSQL dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "172.24.108.167", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
+                DbHelperSQL dbNet;
+                var connectionString = ToolAPI.INIOperate.IniReadValue("netSqlGroup", "connectionString", Application.StartupPath + "\\Config.ini");
+                string[] connectionStringtearm = connectionString.Split('&');
+                if (connectionStringtearm != null && connectionStringtearm.Length == 5)
+                    dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", connectionStringtearm[0], connectionStringtearm[1], connectionStringtearm[2], connectionStringtearm[3], connectionStringtearm[4]), DbProviderType.MySql);
+                else
+                    dbNet = new DbHelperSQL(string.Format("Data Source={0};Port={1};Database={2};User={3};Password={4}", "172.24.108.167", "3306", "gd_db_v2", "wisdom_root", "JIwLi5j40SY#o1Et"), DbProviderType.MySql);
                 Dictionary<string, string> Equipment_project_temp = new Dictionary<string, string>();
                 string sql = "select distinct  equipment_sn,project_id from biz_project_equipment where equipment_type ='"+ Equipment_type.卸料平台 + "'";
                 DataTable dt = dbNet.ExecuteDataTable(sql, null);

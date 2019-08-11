@@ -28,6 +28,10 @@ namespace ProtocolAnalysis.Iot_v1.model
         /// </summary>
         public string frame_token { get; set; }
         /// <summary>
+        /// 短链接标识
+        /// </summary>
+        public string short_link { get; set; }
+        /// <summary>
         /// 数据域
         /// </summary>
         public object data { get; set; }
