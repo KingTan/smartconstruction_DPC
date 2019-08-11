@@ -34,5 +34,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 //[assembly: AssemblyVersion("1.0.0.0")]
 //[assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: AssemblyVersion("19.08.10.0")]//第一次
-[assembly: AssemblyFileVersion("19.08.10.0")]
+//[assembly: AssemblyVersion("19.08.10.0")]//第一次
+//[assembly: AssemblyFileVersion("19.08.10.0")]
+[assembly: AssemblyVersion("19.08.11.01")]//把塔吊，升降机，卸料的报警统计放入了报警类型中
+[assembly: AssemblyFileVersion("19.08.11.01")]

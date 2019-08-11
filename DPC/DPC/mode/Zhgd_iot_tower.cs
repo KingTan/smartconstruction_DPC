@@ -127,6 +127,10 @@ namespace DPC
         /// </summary>
         public string is_work_cycles_warning { get; set; }
         /// <summary>
+        /// 报警类型汇总
+        /// </summary>
+        public List<string> work_cycles_warning_type { get; set; }
+        /// <summary>
         /// 是否有效 根据高度，幅度，回转
         /// </summary>
         public bool is_change_height { get; set; }
@@ -150,6 +154,7 @@ namespace DPC
             is_work_cycles_warning = "N";
             is_change_height = false;
             last_height = 0; last_range = 0; last_rotation = 0;
+            work_cycles_warning_type = new List<string>();
         }
 
         public string Get_work_cycles_no(Zhgd_iot_tower_current zhgd_Iot_Tower_Current)
@@ -158,7 +163,16 @@ namespace DPC
             if (zhgd_Iot_Tower_Current.weight > 0.2)
             {
                 if (zhgd_Iot_Tower_Current.is_warning == "Y")
+                {
                     is_work_cycles_warning = "Y";
+                    foreach(string type in zhgd_Iot_Tower_Current.warning_type)
+                    {
+                       if( !work_cycles_warning_type.Contains(type))
+                        {
+                            work_cycles_warning_type.Add(type);
+                        }
+                    }
+                }
                 if (work_cycles_no != "0")
                 {
                     if (last_height != zhgd_Iot_Tower_Current.height || last_range != zhgd_Iot_Tower_Current.range || last_rotation != zhgd_Iot_Tower_Current.rotation)
@@ -186,6 +200,7 @@ namespace DPC
                     Zhgd_iot_tower_working ztw = Zhgd_iot_tower_working.Get_Zhgd_iot_tower_working(zhgd_Iot_Tower_Current);
                     ztw.work_cycles_warning = is_work_cycles_warning;
                     ztw.work_cycles_no = work_cycles_no;
+                    ztw.warning_type = work_cycles_warning_type.ToArray();
                     //异步运行
                     Tower_operation.Put_work_cycles_event.BeginInvoke(ztw,null,null);
                     //进行初始化操作

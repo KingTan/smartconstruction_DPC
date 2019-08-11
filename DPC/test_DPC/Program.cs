@@ -21,15 +21,15 @@ namespace test_DPC
             //DPC.Restful.Post(url, content);
 
 
-            //MainClass mc = new MainClass();
-            ////解析
-            //Subject sub = new Subject();
-            //sub.DataAnalysis += ProtocolAnalysisSE_Main.ProtocolPackageResolver;
-            ////命令下发
-            //CommandIssued_Main.CommandIssued_MainInit();
-            //sub.CommandSending += CommandIssued_Main.CommandIssuedInitEvent;
-            //mc.App_Open(sub);
-            //Console.ReadLine();
+            MainClass mc = new MainClass();
+            //解析
+            Subject sub = new Subject();
+            sub.DataAnalysis += ProtocolAnalysisSE_Main.ProtocolPackageResolver;
+            //命令下发
+            CommandIssued_Main.CommandIssued_MainInit();
+            sub.CommandSending += CommandIssued_Main.CommandIssuedInitEvent;
+            mc.App_Open(sub);
+            Console.ReadLine();
 
 
             //RedisCacheHelper.Add("塔吊1", 1565021089001);
@@ -62,7 +62,7 @@ namespace test_DPC
             //Register_send_frame register_Send_Frame = JsonConvert.DeserializeObject<Register_send_frame>(sf.data.ToString());
 
 
-            RedisCacheHelper.Add("asd","");
+            //RedisCacheHelper.Add("asd","");
         }
     }
 }

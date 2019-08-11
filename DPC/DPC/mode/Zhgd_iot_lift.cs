@@ -67,7 +67,7 @@ namespace DPC
     /// <summary>
     /// 运行数据
     /// </summary>
-    public class Zhgd_iot_lift_working :Zhgd_iot_lift_current
+    public class Zhgd_iot_lift_working : Zhgd_iot_lift_current
     {
         /// <summary>
         /// 运行周期告警 Y/N
@@ -116,12 +116,17 @@ namespace DPC
         /// 是否存在报警  默认false
         /// </summary>
         public string is_work_cycles_warning { get; set; }
+        /// <summary>
+        /// 报警类型汇总
+        /// </summary>
+        public List<string> work_cycles_warning_type { get; set; }
 
         public Zhgd_iot_lift_working_state(string sn_temp)
         {
             sn = sn_temp;
             work_cycles_no = "0";
             is_work_cycles_warning = "N";
+            work_cycles_warning_type = new List<string>();
         }
 
         public string Get_work_cycles_no(Zhgd_iot_lift_current zhgd_Iot_Lift_Current)
@@ -130,7 +135,16 @@ namespace DPC
             if (zhgd_Iot_Lift_Current.speed > 0)
             {
                 if (zhgd_Iot_Lift_Current.is_warning == "Y")
+                {
                     is_work_cycles_warning = "Y";
+                    foreach (string type in zhgd_Iot_Lift_Current.warning_type)
+                    {
+                        if (!work_cycles_warning_type.Contains(type))
+                        {
+                            work_cycles_warning_type.Add(type);
+                        }
+                    }
+                }
                 if (work_cycles_no == "0")
                 {
                     work_cycles_no = DPC_Tool.GetTimeStamp().ToString();
@@ -146,6 +160,7 @@ namespace DPC
                     Zhgd_iot_lift_working ztw = Zhgd_iot_lift_working.Get_Zhgd_iot_lift_working(zhgd_Iot_Lift_Current);
                     ztw.work_cycles_warning = is_work_cycles_warning;
                     ztw.work_cycles_no = work_cycles_no;
+                    ztw.warning_type = work_cycles_warning_type.ToArray();
                     //异步运行
                     Lift_operation.Put_work_cycles_event.BeginInvoke(ztw, null, null);
                     //进行初始化操作
