@@ -21,15 +21,15 @@ namespace test_DPC
             //DPC.Restful.Post(url, content);
 
 
-            MainClass mc = new MainClass();
-            //解析
-            Subject sub = new Subject();
-            sub.DataAnalysis += ProtocolAnalysisSE_Main.ProtocolPackageResolver;
-            //命令下发
-            CommandIssued_Main.CommandIssued_MainInit();
-            sub.CommandSending += CommandIssued_Main.CommandIssuedInitEvent;
-            mc.App_Open(sub);
-            Console.ReadLine();
+            //MainClass mc = new MainClass();
+            ////解析
+            //Subject sub = new Subject();
+            //sub.DataAnalysis += ProtocolAnalysisSE_Main.ProtocolPackageResolver;
+            ////命令下发
+            //CommandIssued_Main.CommandIssued_MainInit();
+            //sub.CommandSending += CommandIssued_Main.CommandIssuedInitEvent;
+            //mc.App_Open(sub);
+            //Console.ReadLine();
 
 
             //RedisCacheHelper.Add("塔吊1", 1565021089001);
@@ -63,6 +63,8 @@ namespace test_DPC
 
 
             //RedisCacheHelper.Add("asd","");
+
+            API_request_data.Unload_KY.Get_token("hfykcs", "hfykcs");
         }
     }
 }
