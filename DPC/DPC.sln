@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API_request_data", "API_req
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_request_data", "API_request_data\API_request_data.csproj", "{BE1C4D8E-D46E-4DD3-8588-131DA15BE409}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_request_data_winserver", "API_request_data_winserver\API_request_data_winserver.csproj", "{9C261B05-1FD4-4EB0-80A0-CD01AAFA2190}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{BE1C4D8E-D46E-4DD3-8588-131DA15BE409}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE1C4D8E-D46E-4DD3-8588-131DA15BE409}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE1C4D8E-D46E-4DD3-8588-131DA15BE409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C261B05-1FD4-4EB0-80A0-CD01AAFA2190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C261B05-1FD4-4EB0-80A0-CD01AAFA2190}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C261B05-1FD4-4EB0-80A0-CD01AAFA2190}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C261B05-1FD4-4EB0-80A0-CD01AAFA2190}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +83,7 @@ Global
 		{4B1E370C-F29C-49F4-99E7-1B2F06F63BAC} = {9985B35D-56A4-4023-9ABD-654522D1328C}
 		{FF43E5DD-F67E-4783-8E51-02A6C1A0D959} = {545687A0-1DA8-42E8-BE9B-79B53F7E8645}
 		{BE1C4D8E-D46E-4DD3-8588-131DA15BE409} = {B9741431-63CE-49B1-B715-4B73A020AB00}
+		{9C261B05-1FD4-4EB0-80A0-CD01AAFA2190} = {B9741431-63CE-49B1-B715-4B73A020AB00}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B5883BBC-8957-4CB7-ACA2-0075F5F5203A}
