@@ -20,7 +20,8 @@ namespace API_request_data
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "POST";
                 request.ContentType = ContentType;
-                Util.SetCertificatePolicy();
+                System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; //加上这一句
+                // Util.SetCertificatePolicy();
                 byte[] data = Encoding.UTF8.GetBytes(senddata);
                 request.ContentLength = data.Length;
                 using (Stream reqStream = request.GetRequestStream())

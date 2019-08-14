@@ -19,9 +19,9 @@ namespace API_request_data
     {
         static string Unload_userName;
         static string Unload_password;
-        static string Get_token_url = "https://101.37.149.55/SmartSite/v2/getToken.action";
-        static string Get_Device_list_url = "https://101.37.149.55/UnloadingPlatform/v2/listAllUnloadByUnloadId.action";
-        static string Get_Real_list_url = "https://101.37.149.55/UnloadingPlatform/v2/listRealUnloadData.action";
+        static string Get_token_url = "http://101.37.149.55/SmartSite/v2/getToken.action";
+        static string Get_Device_list_url = "http://101.37.149.55/UnloadingPlatform/v2/listAllUnloadByUnloadId.action";
+        static string Get_Real_list_url = "http://101.37.149.55/UnloadingPlatform/v2/listRealUnloadData.action";
         static Thread Get_real_currentT;
         static Unload_KY()
         {
