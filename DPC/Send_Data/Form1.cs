@@ -540,10 +540,13 @@ namespace Send_Data
         #region 人员考勤
         private void button12_Click(object sender, EventArgs e)
         {
-            label1.Text = "";
+            string project_code =  textBox1.Text;
+            string personal_id_code = textBox2.Text;
+            string in_or_out = comboBox1.Text;
             try
             {
-                string datastring = "{\"frame_type\":\"real_time_data\",\"equipment_type\":\"personnel\",\"time_stamp\":\"2019-08-0822:27:00\",\"frame_token\":\"z7d8jfgn39ki987779jh2\",\"short_link\":\"true\",\"data\":{\"project_code\":\"123456\",\"sn\":\"13246\",\"gate_no\":\"145\",\"timestamp\":1565338446000,\"channel_no\":\"1\",\"cert_mode\":\"03\",\"in_or_out\":\"01\",\"personal_id_code\":\"421546325978541124\",\"features_code\":\"\"}}";
+                string datastring = "{\"frame_type\":\"real_time_data\",\"equipment_type\":\"personnel\",\"time_stamp\":\"2019-08-0822:27:00\",\"frame_token\":\"z7d8jfgn39ki987779jh2\",\"short_link\":\"true\",\"data\":{\"project_code\":\""+ project_code + "\",\"sn\":\"13246\",\"gate_no\":\"145\",\"timestamp\":"+ Class1.ConvertDateTimeLong(DateTime.Now) + ",\"channel_no\":\"1\",\"cert_mode\":\"03\",\"in_or_out\":\""+ in_or_out + "\",\"personal_id_code\":\""+ personal_id_code + "\",\"features_code\":\"\"}}";
+               // string datastring =string.Format("{\"frame_type\":\"real_time_data\",\"equipment_type\":\"personnel\",\"time_stamp\":\"2019-08-0822:27:00\",\"frame_token\":\"z7d8jfgn39ki987779jh2\",\"short_link\":\"true\",\"data\":{\"project_code\":\"{0}\",\"sn\":\"13246\",\"gate_no\":\"145\",\"timestamp\":{1},\"channel_no\":\"1\",\"cert_mode\":\"03\",\"in_or_out\":\"{2}\",\"personal_id_code\":\"{3}\",\"features_code\":\"\"}}", project_code, Class1.ConvertDateTimeLong(DateTime.Now), in_or_out, personal_id_code);
                 Send_frame temp = JsonConvert.DeserializeObject<Send_frame>(datastring);
                 Personnel_send_frame tower_Send_Frame = JsonConvert.DeserializeObject<Personnel_send_frame>(temp.data.ToString());
                 //第一帧
