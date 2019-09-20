@@ -73,6 +73,29 @@ namespace API_request_data
                 return true;
             }
         }
+
+        public static string HttpGet(string url)
+        {
+            string result = string.Empty;
+            try
+            {
+                HttpWebRequest wbRequest = (HttpWebRequest)WebRequest.Create(url);
+                wbRequest.Method = "GET";
+                HttpWebResponse wbResponse = (HttpWebResponse)wbRequest.GetResponse();
+                using (Stream responseStream = wbResponse.GetResponseStream())
+                {
+                    using (StreamReader sReader = new StreamReader(responseStream))
+                    {
+                        result = sReader.ReadToEnd();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            return result;
+        }
         #endregion
     }
 }

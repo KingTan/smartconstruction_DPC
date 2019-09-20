@@ -59,5 +59,20 @@ namespace DPC
         /// AQI
         /// </summary>
         public double aqi { get; set; }
+
+         public Zhgd_iot_dust_noise_current()
+        {
+            pm2_5 = 0;
+            pm10 = 0;
+            tsp = 0;
+            noise = 0;
+            temperature =0;
+            humidity = 0;
+            wind_speed = 0;
+            wind_grade = 0;
+            wind_direction = 0;
+            air_pressure = 0;
+            rainfall = 0;
+        }
     }
 }

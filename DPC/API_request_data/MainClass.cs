@@ -16,6 +16,7 @@ namespace API_request_data
             {
                 Unload_KY.App_Open();
                 Dust_noise_KY.App_Open();
+                Dust_noise_RK.App_Open();
                 ToolAPI.XMLOperation.WriteLogXmlNoTail("程序启动", "");
             }
             catch (Exception ex)
@@ -32,6 +33,7 @@ namespace API_request_data
             {
                 Unload_KY.App_Close();
                 Dust_noise_KY.App_Close();
+                Dust_noise_RK.App_Close();
                 ToolAPI.XMLOperation.WriteLogXmlNoTail("程序关闭", "");
             }
             catch (Exception ex)

@@ -69,7 +69,7 @@ namespace test_DPC
             //API_request_data.科宇.扬尘噪音.Get_Real_list_result _Result = JsonConvert.DeserializeObject<API_request_data.科宇.扬尘噪音.Get_Real_list_result>(s);
             //API_request_data.科宇.扬尘噪音.Dust_noise_real dust_Noise_Real = API_request_data.科宇.扬尘噪音.Dust_noise_real.Get_Dust_noise_real(_Result.data[0].ToString());
 
-            API_request_data.Dust_noise_KY.App_Open();
+            API_request_data.Dust_noise_RK.App_Open();
         }
     }
 }

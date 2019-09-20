@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainClass.cs" />
+    <Compile Include="仁科\扬尘噪音\Dust_noise_RK.cs" />
+    <Compile Include="仁科\扬尘噪音\Get_Real_list_result_RK.cs" />
     <Compile Include="科宇\卸料\Get_Real_list_result.cs" />
     <Compile Include="科宇\卸料\Get_Device_list_result.cs" />
     <Compile Include="科宇\卸料\Get_token_result.cs" />
