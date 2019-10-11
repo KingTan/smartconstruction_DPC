@@ -13,6 +13,9 @@ namespace DPC
 {
     /// <summary>
     /// 塔吊操作类
+    /// 1、进行数据清洗，排除无权限的数据。
+    /// 2、直接进行ES数据存储。前期直接执行的，后期可以放入RabbitMQ
+    /// 3、放入RabbitMQ ，等待转发/推送等（其他数据定向处理的服务）。
     /// </summary>
     public static class Tower_operation
     {
@@ -101,12 +104,15 @@ namespace DPC
                         working_state.Add(zhgd_Iot_Tower_Current.sn, new Zhgd_iot_tower_working_state(zhgd_Iot_Tower_Current.sn));
                         zhgd_Iot_Tower_Current.work_cycles_no = working_state[zhgd_Iot_Tower_Current.sn].Get_work_cycles_no(zhgd_Iot_Tower_Current);
                     }
+                    //先执行rabbitMQ 进行推送
+                    RabbitMQ.producer("Tower_forward", JsonConvert.SerializeObject(zhgd_Iot_Tower_Current));
                     //执行put方法，把实时数据推走
                     Put_tower_current(zhgd_Iot_Tower_Current);
                     //进行司机记录推送
                     Get_equminet_driver(zhgd_Iot_Tower_Current.sn, zhgd_Iot_Tower_Current.driver_id_code);
                     //更新redis
                     DPC.Tower_operation.Update_equminet_last_online_time(zhgd_Iot_Tower_Current.sn, zhgd_Iot_Tower_Current.timestamp);
+                    
                 }
             }
             catch (Exception ex)

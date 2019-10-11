@@ -101,6 +101,8 @@ namespace DPC
                         working_state.Add(zhgd_Iot_Lift_Current.sn, new Zhgd_iot_lift_working_state(zhgd_Iot_Lift_Current.sn));
                         zhgd_Iot_Lift_Current.work_cycles_no = working_state[zhgd_Iot_Lift_Current.sn].Get_work_cycles_no(zhgd_Iot_Lift_Current);
                     }
+                    //先执行rabbitMQ 进行推送
+                    RabbitMQ.producer("Lift_forward", JsonConvert.SerializeObject(zhgd_Iot_Lift_Current));
                     //执行put方法，把实时数据推走
                     Put_lift_current(zhgd_Iot_Lift_Current);
                     //进行司机记录推送

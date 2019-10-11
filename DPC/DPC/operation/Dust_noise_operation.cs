@@ -115,6 +115,9 @@ namespace DPC
                     zhgd_Iot_dust_noise_Current.warning_type = vs.ToArray();
                     //进行AQI计算
                     zhgd_Iot_dust_noise_Current.aqi = Get_aqi(zhgd_Iot_dust_noise_Current.pm2_5);
+
+                    //先执行rabbitMQ 进行推送
+                    RabbitMQ.producer("Dust_noise_forward", JsonConvert.SerializeObject(zhgd_Iot_dust_noise_Current));
                     //执行put方法，把实时数据推走
                     Put_dust_noise_current(zhgd_Iot_dust_noise_Current);
                     //更新在线时间

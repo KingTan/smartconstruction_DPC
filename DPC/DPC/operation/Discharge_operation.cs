@@ -101,6 +101,8 @@ namespace DPC
                         working_state.Add(zhgd_Iot_discharge_Current.sn, new Zhgd_iot_discharge_working_state(zhgd_Iot_discharge_Current.sn));
                         zhgd_Iot_discharge_Current.work_cycles_no = working_state[zhgd_Iot_discharge_Current.sn].Get_work_cycles_no(zhgd_Iot_discharge_Current);
                     }
+                    //先执行rabbitMQ 进行推送
+                    RabbitMQ.producer("Discharge_forward", JsonConvert.SerializeObject(zhgd_Iot_discharge_Current));
                     //执行put方法，把实时数据推走
                     Put_discharge_current(zhgd_Iot_discharge_Current);
                     //更新redis

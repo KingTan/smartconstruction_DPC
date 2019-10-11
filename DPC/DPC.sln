@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29201.188
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2011
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPC", "DPC\DPC.csproj", "{5E159119-D903-4BE1-A8E3-812776DBB144}"
 EndProject
@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TCP_UDP_receive_data", "TCP
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "数据制造器", "数据制造器", "{545687A0-1DA8-42E8-BE9B-79B53F7E8645}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data_storage", "Data_storage", "{108340C4-DFBE-4DED-B268-045091CC5EA5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data_operate", "Data_operate", "{108340C4-DFBE-4DED-B268-045091CC5EA5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API_request_data", "API_request_data", "{B9741431-63CE-49B1-B715-4B73A020AB00}"
 EndProject
@@ -32,6 +32,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSend", "ProjectSend\ProjectSend.csproj", "{739D8209-FAF8-4359-B048-AA65E16A84D9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectReceive", "ProjectReceive\ProjectReceive.csproj", "{C90A052E-72D2-4BC7-9A2F-DC71DC013AFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "forward", "forward", "{0402EF6C-2CBD-4D7B-938A-52340F18C826}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forward", "Forward\Forward.csproj", "{59819505-5192-4B30-8E93-AF1FDA930EEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +87,10 @@ Global
 		{C90A052E-72D2-4BC7-9A2F-DC71DC013AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C90A052E-72D2-4BC7-9A2F-DC71DC013AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C90A052E-72D2-4BC7-9A2F-DC71DC013AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59819505-5192-4B30-8E93-AF1FDA930EEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59819505-5192-4B30-8E93-AF1FDA930EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59819505-5192-4B30-8E93-AF1FDA930EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59819505-5192-4B30-8E93-AF1FDA930EEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +104,8 @@ Global
 		{FF43E5DD-F67E-4783-8E51-02A6C1A0D959} = {545687A0-1DA8-42E8-BE9B-79B53F7E8645}
 		{BE1C4D8E-D46E-4DD3-8588-131DA15BE409} = {B9741431-63CE-49B1-B715-4B73A020AB00}
 		{9C261B05-1FD4-4EB0-80A0-CD01AAFA2190} = {B9741431-63CE-49B1-B715-4B73A020AB00}
+		{0402EF6C-2CBD-4D7B-938A-52340F18C826} = {108340C4-DFBE-4DED-B268-045091CC5EA5}
+		{59819505-5192-4B30-8E93-AF1FDA930EEA} = {0402EF6C-2CBD-4D7B-938A-52340F18C826}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B5883BBC-8957-4CB7-ACA2-0075F5F5203A}

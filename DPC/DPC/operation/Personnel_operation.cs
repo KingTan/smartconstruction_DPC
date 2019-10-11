@@ -88,6 +88,10 @@ namespace DPC
                     zhgd_Iot_Personnel_Records.create_time = DPC_Tool.GetTimeStamp();
                     zhgd_Iot_Personnel_Records.project_id = value;
                     zhgd_Iot_Personnel_Records.equipment_type = Equipment_type.人员管理;
+
+                    //先执行rabbitMQ 进行推送
+                    RabbitMQ.producer("Personnel_forward", JsonConvert.SerializeObject(zhgd_Iot_Personnel_Records));
+
                     //执行put方法，把实时数据推走
                     Put_Send_personnel_records(zhgd_Iot_Personnel_Records);
                 }
